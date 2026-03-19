@@ -26,6 +26,23 @@ export default function Navbar() {
     router.push('/')
   }
 
+  // Extract display name from user object or email
+  const getDisplayName = () => {
+    if (user?.name) {
+      return user.name
+    }
+    if (user?.email) {
+      // Extract name from email (e.g., "john@example.com" -> "John")
+      const emailName = user.email.split('@')[0]
+      // Capitalize first letter of each part
+      return emailName
+        .split(/[\._-]/)
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ')
+    }
+    return 'Traveler'
+  }
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -70,7 +87,7 @@ export default function Navbar() {
                   <div className="w-10 h-10 bg-cream rounded-full flex items-center justify-center">
                     <User className="w-5 h-5 text-charcoal" />
                   </div>
-                  <span className="text-charcoal font-medium">{user?.name || 'Traveler'}</span>
+                  <span className="text-charcoal font-medium">{getDisplayName()}</span>
                   <button
                     onClick={handleLogout}
                     className="text-charcoal/60 hover:text-terracotta transition-colors"
@@ -143,7 +160,7 @@ export default function Navbar() {
                           <User className="w-5 h-5 text-charcoal" />
                         </div>
                         <div>
-                          <p className="text-charcoal font-medium">{user?.name || 'Traveler'}</p>
+                          <p className="text-charcoal font-medium">{getDisplayName()}</p>
                           <p className="text-charcoal/60 text-sm">{user?.email || ''}</p>
                         </div>
                       </div>

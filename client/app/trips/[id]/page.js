@@ -10,6 +10,7 @@ import ItineraryEditPanel from '@/components/ItineraryEditPanel'
 import BudgetChart from '@/components/BudgetChart'
 import HotelCard from '@/components/HotelCard'
 import { useAuthStore } from '@/store/authStore'
+import { useCurrencyStore } from '@/store/currencyStore'
 
 export default function TripDetailsPage() {
   const router = useRouter()
@@ -33,14 +34,11 @@ export default function TripDetailsPage() {
     }
   }, [mounted, isAuthenticated, router])
 
-  // Currency conversion rates
-  const CURRENCY_RATES = {
-    USD: 1,
-    INR: 83,
-    EUR: 0.92,
-    GBP: 0.79,
-    JPY: 149,
-  }
+  const { rates, fetchRates, convert } = useCurrencyStore()
+
+  useEffect(() => {
+    fetchRates()
+  }, [])
 
   const CURRENCY_SYMBOLS = {
     USD: '$',
@@ -51,8 +49,7 @@ export default function TripDetailsPage() {
   }
 
   const convertCurrency = (amountUSD) => {
-    const converted = amountUSD * CURRENCY_RATES[selectedCurrency]
-    return Math.round(converted)
+    return convert(amountUSD, selectedCurrency)
   }
 
   // Fetch trip data
@@ -271,6 +268,7 @@ export default function TripDetailsPage() {
                   </div>
                   <BudgetChart
                     budget={trip.budget}
+                    days={trip.days}
                     selectedCurrency={selectedCurrency}
                     convertCurrency={convertCurrency}
                     currencySymbol={CURRENCY_SYMBOLS[selectedCurrency]}

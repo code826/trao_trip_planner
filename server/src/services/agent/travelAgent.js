@@ -263,18 +263,45 @@ ${JSON.stringify(trip.hotels, null, 2)}
 
 User request: "${userRequest}"
 
-Return a JSON object with this exact structure:
+Return ONLY a JSON object with this EXACT structure. Do NOT include _id fields anywhere:
 {
-  "days": <updated number of days>,
-  "itinerary": [ ... ],
+  "days": <number>,
+  "itinerary": [
+    {
+      "dayNumber": 1,
+      "theme": "string",
+      "activities": [
+        {
+          "time": "09:00 AM",
+          "title": "string",
+          "description": "string",
+          "estimatedCost": 0
+        }
+      ]
+    }
+  ],
   "budget": {
-    "breakdown": [ { "category": "string", "estimatedCost": 0 } ],
+    "breakdown": [
+      {
+        "category": "string",
+        "estimatedCost": 0
+      }
+    ],
     "totalEstimatedCost": 0,
     "currency": "USD"
   },
-  "hotels": [ ... ]
+  "hotels": [
+    {
+      "name": "string",
+      "rating": 4.5,
+      "pricePerNight": 0,
+      "description": "string",
+      "bookingUrl": "optional string"
+    }
+  ]
 }
 
+IMPORTANT: Never include _id, __v, or any MongoDB internal fields in your response.
 If you cannot process the request, return: { "success": false, "message": "Unable to update itinerary" }`;
 
   const maxRetries = 3;

@@ -201,16 +201,29 @@ export const updateItinerary = async (req, res, next) => {
       });
     }
 
+    // Strip any _id / __v fields the AI may have invented — Mongoose will generate fresh ObjectIds
+    const stripIds = (obj) => {
+      if (Array.isArray(obj)) return obj.map(stripIds);
+      if (obj && typeof obj === 'object') {
+        const clean = {};
+        for (const [k, v] of Object.entries(obj)) {
+          if (k === '_id' || k === '__v' || k === 'id') continue;
+          clean[k] = stripIds(v);
+        }
+        return clean;
+      }
+      return obj;
+    };
+
     // Apply AI updates — including days count if it changed
-    trip.itinerary = updatedData.itinerary;
-    trip.budget = updatedData.budget;
+    trip.itinerary = stripIds(updatedData.itinerary);
+    trip.budget = stripIds(updatedData.budget);
     if (updatedData.hotels && updatedData.hotels.length > 0) {
-      trip.hotels = updatedData.hotels;
+      trip.hotels = stripIds(updatedData.hotels);
     }
     if (updatedData.days && typeof updatedData.days === 'number') {
       trip.days = updatedData.days;
     } else {
-      // Derive from actual itinerary length if AI didn't explicitly return it
       trip.days = updatedData.itinerary.length;
     }
 

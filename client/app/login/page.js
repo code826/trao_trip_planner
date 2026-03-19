@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, LogOut } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { useAuthStore } from '@/store/authStore'
 
 export default function LoginPage() {
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -17,7 +18,18 @@ export default function LoginPage() {
     email: '',
     password: '',
   })
+  const { isAuthenticated, user, logout } = useAuthStore()
   const login = useAuthStore((state) => state.login)
+
+  // Prevent hydration issues and handle already logged-in users
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -64,14 +76,43 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen gradient-mesh flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 animate-scale-in">
-        <div className="text-center">
-          <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">
-            Welcome Back
-          </h2>
-          <p className="text-charcoal/60">
-            Sign in to access your travel plans
-          </p>
-        </div>
+        {/* Show message if user is already logged in */}
+        {mounted && isAuthenticated && (
+          <div className="bg-cream border border-sage rounded-2xl p-8 text-center animate-fade-in">
+            <div className="w-16 h-16 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-sage" />
+            </div>
+            <h2 className="text-2xl font-serif font-bold text-charcoal mb-2">
+              Already Logged In
+            </h2>
+            <p className="text-charcoal/60 mb-6">
+              You are already logged in as <span className="font-semibold text-terracotta">
+                {user?.email || user?.name || 'user'}
+              </span>. Please logout first to login with a different account.
+            </p>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={handleLogout}
+              className="gap-2"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </Button>
+          </div>
+        )}
+
+        {/* Show login form only if not logged in */}
+        {(!mounted || !isAuthenticated) && (
+          <>
+            <div className="text-center">
+              <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">
+                Welcome Back
+              </h2>
+              <p className="text-charcoal/60">
+                Sign in to access your travel plans
+              </p>
+            </div>
 
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 animate-fade-in">
@@ -148,14 +189,16 @@ export default function LoginPage() {
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
-
-          <p className="text-center text-charcoal/60">
-            Don't have an account?{' '}
-            <Link href="/register" className="font-semibold text-terracotta hover:text-terracottaDark transition-colors link-hover">
-              Create one now
-            </Link>
-          </p>
         </form>
+
+            <p className="text-center text-charcoal/60">
+              Don't have an account?{' '}
+              <Link href="/register" className="font-semibold text-terracotta hover:text-terracottaDark transition-colors link-hover">
+                Create one now
+              </Link>
+            </p>
+          </>
+        )}
       </div>
     </div>
   )
