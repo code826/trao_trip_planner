@@ -1,4 +1,4 @@
-import { Star, MapPin, ExternalLink, Loader2 } from 'lucide-react'
+import { Star, MapPin, ExternalLink, Loader2, Hotel } from 'lucide-react'
 import Button from './ui/Button'
 
 const HotelCard = ({ hotel }) => {
@@ -7,7 +7,7 @@ const HotelCard = ({ hotel }) => {
       {/* Hotel Image Placeholder */}
       <div className="h-48 bg-gradient-to-br from-terracotta/10 to-sage/10 flex items-center justify-center">
         <div className="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center">
-          <MapPin className="w-8 h-8 text-terracotta/60" />
+          <span className="text-4xl">🏨</span>
         </div>
       </div>
 
@@ -25,11 +25,10 @@ const HotelCard = ({ hotel }) => {
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${
-                  i < Math.floor(hotel.rating)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'text-gray-300'
-                }`}
+                className={`w-4 h-4 ${i < Math.floor(hotel.rating)
+                  ? 'fill-yellow-400 text-yellow-400'
+                  : 'text-gray-300'
+                  }`}
               />
             ))}
           </div>

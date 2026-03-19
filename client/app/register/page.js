@@ -60,11 +60,12 @@ export default function RegisterPage() {
 
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
-      
+
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: formData.name,
           email: formData.email,
           password: formData.password,
         }),

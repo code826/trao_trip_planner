@@ -88,6 +88,21 @@ export default function DashboardPage() {
     return budgetType.charAt(0).toUpperCase() + budgetType.slice(1)
   }
 
+  // Extract name from email if name is not available
+  const getDisplayName = () => {
+    if (user?.name) {
+      return user.name
+    }
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      return emailName
+        .split(/[._-]/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ')
+    }
+    return 'Traveler'
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen gradient-mesh">
@@ -117,20 +132,20 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen gradient-mesh">
+    <div className="min-h-screen gradient-mesh pt-20">
       <div className="container mx-auto px-6 py-12">
         {/* Dashboard Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 animate-slide-down">
-          <div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 gap-6 animate-slide-down">
+          <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-2">
-              Welcome back, {user?.name || 'Traveler'}!
+              Welcome back, {getDisplayName()}!
             </h1>
             <p className="text-xl text-charcoal/60">
               Ready for your next adventure?
             </p>
           </div>
 
-          <div className="flex items-center gap-4 mt-6 md:mt-0">
+          <div className="flex items-center gap-4">
             <Button
               variant="primary"
               onClick={() => router.push('/trips/new')}
@@ -223,7 +238,7 @@ export default function DashboardPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
             {trips.map((trip, index) => (
               <div key={trip._id} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                <TripCard trip={trip} />
+                <TripCard trip={trip} index={index} />
               </div>
             ))}
           </div>
