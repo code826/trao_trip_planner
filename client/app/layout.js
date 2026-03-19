@@ -7,7 +7,7 @@ import ToastContainer from '@/components/ToastContainer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Trao Travel Planner - Your Journey Begins Here',
+  title: 'Tripo-AI - Your AI Travel Planner',
   description: 'AI-powered travel planning that creates personalized itineraries based on your interests, budget, and preferences.',
 }
 

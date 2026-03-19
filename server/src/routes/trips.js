@@ -5,6 +5,7 @@ import {
   getTripById,
   createTrip,
   regenerateDay,
+  updateItinerary,
   deleteTrip,
 } from '../controllers/tripController.js';
 
@@ -17,6 +18,7 @@ router.get('/', getAllTrips);
 router.get('/:id', getTripById);
 router.post('/', createTrip);
 router.put('/:id/regenerate-day', regenerateDay);
+router.put('/:id/update-itinerary', updateItinerary);
 router.delete('/:id', deleteTrip);
 
 export default router;

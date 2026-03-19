@@ -10,10 +10,11 @@ import { useAuthStore } from '@/store/authStore'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { isAuthenticated, user, logout } = useAuthStore()
+  const { isAuthenticated, user, logout, token } = useAuthStore()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [trips, setTrips] = useState([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     setMounted(true)
@@ -26,32 +27,32 @@ export default function DashboardPage() {
     }
 
     if (isAuthenticated) {
-      // Mock trips data
-      const mockTrips = [
-        {
-          _id: '1',
-          destination: 'Paris, France',
-          days: 3,
-          budgetType: 'standard',
-          interests: ['art', 'food', 'history'],
-          createdAt: '2024-03-15',
-        },
-        {
-          _id: '2',
-          destination: 'Tokyo, Japan',
-          days: 5,
-          budgetType: 'luxury',
-          interests: ['food', 'technology', 'culture'],
-          createdAt: '2024-03-10',
-        },
-      ]
-
-      setTimeout(() => {
-        setTrips(mockTrips)
-        setLoading(false)
-      }, 1000)
+      fetchTrips()
     }
   }, [mounted, isAuthenticated, router])
+
+  const fetchTrips = async () => {
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+      const response = await fetch(`${API_URL}/trips`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch trips')
+      }
+
+      const data = await response.json()
+      setTrips(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error('Error fetching trips:', err)
+      setError(err.message || 'Failed to load trips')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleLogout = () => {
     logout()

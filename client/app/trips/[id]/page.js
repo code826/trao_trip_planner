@@ -1,122 +1,100 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, RefreshCw, MapPin, DollarSign, Star, Loader2, Home, Calendar, Clock } from 'lucide-react'
+import { ArrowLeft, MapPin, DollarSign, Star, Loader2, Home, Calendar, Edit3 } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import ItineraryDay from '@/components/ItineraryDay'
+import ItineraryEditPanel from '@/components/ItineraryEditPanel'
 import BudgetChart from '@/components/BudgetChart'
 import HotelCard from '@/components/HotelCard'
-
-const MOCK_TRIP = {
-  _id: 'mock-trip-id',
-  destination: 'Paris, France',
-  days: 3,
-  budgetType: 'standard',
-  interests: ['art', 'food', 'history'],
-  createdAt: '2024-03-15',
-  itinerary: [
-    {
-      dayNumber: 1,
-      theme: 'Arrival and Eiffel Tower',
-      activities: [
-        { time: '10:00 AM', title: 'Check-in', description: 'Arrive at hotel and settle in.', estimatedCost: 0 },
-        { time: '01:00 PM', title: 'Eiffel Tower', description: 'Visit the iconic Eiffel Tower. Take the elevator to the top for panoramic views of Paris.', estimatedCost: 30 },
-        { time: '04:00 PM', title: 'Seine River Cruise', description: 'Relaxing boat tour along the Seine with views of major landmarks.', estimatedCost: 25 },
-        { time: '08:00 PM', title: 'Dinner in Le Marais', description: 'Enjoy traditional French cuisine at a bistro in the historic Le Marais district.', estimatedCost: 45 },
-      ],
-    },
-    {
-      dayNumber: 2,
-      theme: 'Art and Culture',
-      activities: [
-        { time: '09:00 AM', title: 'Louvre Museum', description: 'Explore world-famous art including the Mona Lisa and Venus de Milo.', estimatedCost: 22 },
-        { time: '02:00 PM', title: 'Musée d\'Orsay', description: 'Admire Impressionist masterpieces in this former railway station.', estimatedCost: 18 },
-        { time: '05:00 PM', title: 'Montmartre Walk', description: 'Wander through the artistic neighborhood of Montmartre, visit Place du Tertre.', estimatedCost: 0 },
-        { time: '07:30 PM', title: 'Sacré-Cœur', description: 'Visit the basilica and enjoy sunset views over Paris.', estimatedCost: 0 },
-      ],
-    },
-    {
-      dayNumber: 3,
-      theme: 'History and Departure',
-      activities: [
-        { time: '09:00 AM', title: 'Notre-Dame Cathedral', description: 'Marvel at Gothic architecture of this iconic cathedral.', estimatedCost: 0 },
-        { time: '11:00 AM', title: 'Luxembourg Gardens', description: 'Stroll through beautiful gardens and visit the Medicis Fountain.', estimatedCost: 0 },
-        { time: '01:00 PM', title: 'Latin Quarter Lunch', description: 'Enjoy lunch in this lively student district.', estimatedCost: 35 },
-        { time: '03:00 PM', title: 'Shopping at Galeries Lafayette', description: 'Browse luxury goods and enjoy the stunning dome.', estimatedCost: 0 },
-        { time: '06:00 PM', title: 'Departure', description: 'Head to the airport for your flight home.', estimatedCost: 0 },
-      ],
-    },
-  ],
-  budget: {
-    breakdown: [
-      { category: 'Accommodation', estimatedCost: 450 },
-      { category: 'Food', estimatedCost: 200 },
-      { category: 'Activities', estimatedCost: 150 },
-      { category: 'Transport', estimatedCost: 100 },
-    ],
-    totalEstimatedCost: 900,
-    currency: 'USD',
-  },
-  hotels: [
-    { name: 'Hotel de Paris', rating: 4.5, pricePerNight: 150, description: 'Beautiful hotel near the city center with stunning views of the Eiffel Tower.', bookingUrl: '#' },
-    { name: 'Le Grand Monarque', rating: 4.2, pricePerNight: 135, description: 'Elegant hotel in the 7th arrondissement, close to major museums.', bookingUrl: '#' },
-    { name: 'Boutique Montmartre', rating: 4.7, pricePerNight: 165, description: 'Charming boutique hotel in the artistic Montmartre district.', bookingUrl: '#' },
-  ],
-}
+import { useAuthStore } from '@/store/authStore'
 
 export default function TripDetailsPage() {
   const router = useRouter()
+  const params = useParams()
+  const { isAuthenticated, token } = useAuthStore()
+  const [mounted, setMounted] = useState(false)
   const [trip, setTrip] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('itinerary')
-  const [regeneratingDay, setRegeneratingDay] = useState(null)
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
+  const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
-    // Mock loading
-    setTimeout(() => {
-      setTrip(MOCK_TRIP)
-      setLoading(false)
-    }, 1000)
+    setMounted(true)
   }, [])
 
-  const handleRegenerateDay = async (dayNumber) => {
-    setRegeneratingDay(dayNumber)
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/trips/${trip._id}/regenerate/${dayNumber}`, {
-      //   method: 'POST',
-      //   headers: { 'Authorization': `Bearer ${token}` },
-      // })
-      // const data = await response.json()
-
-      // Mock regeneration
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Update the specific day
-      setTrip((prev) => ({
-        ...prev,
-        itinerary: prev.itinerary.map((day) =>
-          day.dayNumber === dayNumber
-            ? {
-                ...day,
-                theme: `New Experience ${dayNumber}`,
-                activities: day.activities.map((activity) => ({
-                  ...activity,
-                  description: 'Updated activity with new suggestions',
-                })),
-              }
-            : day
-        ),
-      }))
-    } catch (error) {
-      console.error('Error regenerating day:', error)
-      alert('Failed to regenerate day. Please try again.')
-    } finally {
-      setRegeneratingDay(null)
+  useEffect(() => {
+    if (mounted && !isAuthenticated) {
+      router.push('/login')
     }
+  }, [mounted, isAuthenticated, router])
+
+  // Currency conversion rates
+  const CURRENCY_RATES = {
+    USD: 1,
+    INR: 83,
+    EUR: 0.92,
+    GBP: 0.79,
+    JPY: 149,
+  }
+
+  const CURRENCY_SYMBOLS = {
+    USD: '$',
+    INR: '₹',
+    EUR: '€',
+    GBP: '£',
+    JPY: '¥',
+  }
+
+  const convertCurrency = (amountUSD) => {
+    const converted = amountUSD * CURRENCY_RATES[selectedCurrency]
+    return Math.round(converted)
+  }
+
+  // Fetch trip data
+  useEffect(() => {
+    if (!mounted || !isAuthenticated) return
+
+    const fetchTrip = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+        const response = await fetch(`${API_URL}/trips/${params.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error('Trip not found')
+        }
+
+        const data = await response.json()
+        setTrip(data)
+      } catch (err) {
+        console.error('Error fetching trip:', err)
+        setError(err.message || 'Failed to load trip')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTrip()
+  }, [mounted, isAuthenticated, params.id, token])
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen gradient-mesh flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-terracotta/30 border-t-terracotta rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
   }
 
   if (loading) {
@@ -144,15 +122,28 @@ export default function TripDetailsPage() {
     )
   }
 
-  if (!trip) {
+  if (error) {
     return (
       <div className="min-h-screen gradient-mesh flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-charcoal/60 mb-4">Trip not found</p>
-          <Link href="/dashboard" className="text-terracotta hover:underline">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">!</span>
+          </div>
+          <h2 className="text-2xl font-serif font-bold text-charcoal mb-2">Error Loading Trip</h2>
+          <p className="text-charcoal/60 mb-6">{error}</p>
+          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-terracotta text-white rounded-xl hover:bg-terracottaDark transition-colors">
+            <ArrowLeft className="w-5 h-5" />
             Back to Dashboard
           </Link>
         </div>
+      </div>
+    )
+  }
+
+  if (!trip) {
+    return (
+      <div className="min-h-screen gradient-mesh flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-terracotta/30 border-t-terracotta rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -206,50 +197,84 @@ export default function TripDetailsPage() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-            {['itinerary', 'budget', 'hotels'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${
-                  activeTab === tab
+          {/* Tabs + Edit button */}
+          <div className="flex items-center justify-between gap-2 mb-8 overflow-x-auto pb-2">
+            <div className="flex gap-2">
+              {['itinerary', 'budget', 'hotels'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${activeTab === tab
                     ? 'bg-terracotta text-white'
                     : 'bg-white text-charcoal hover:bg-cream'
-                }`}
+                    }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {activeTab === 'itinerary' && (
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold bg-charcoal text-white hover:bg-charcoal/80 transition-all whitespace-nowrap shrink-0"
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                <Edit3 className="w-4 h-4" />
+                Edit Itinerary
               </button>
-            ))}
+            )}
           </div>
 
           {/* Content */}
           <div className="space-y-6">
             {activeTab === 'itinerary' && (
-              <div className="space-y-6 stagger-children">
-                {trip.itinerary.map((day, index) => (
-                  <div
-                    key={day.dayNumber}
-                    className="animate-slide-up"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <ItineraryDay
-                      day={day}
-                      onRegenerate={() => handleRegenerateDay(day.dayNumber)}
-                      isRegenerating={regeneratingDay === day.dayNumber}
-                    />
-                  </div>
-                ))}
+              <div className="space-y-6">
+                {/* Days */}
+                <div className="space-y-6 stagger-children">
+                  {trip.itinerary.map((day, index) => (
+                    <div
+                      key={day.dayNumber}
+                      className="animate-slide-up"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <ItineraryDay day={day} />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {activeTab === 'budget' && (
               <div className="animate-scale-in">
                 <div className="bg-white rounded-2xl p-8">
-                  <h2 className="text-3xl font-serif font-bold text-charcoal mb-6">
-                    Budget Breakdown
-                  </h2>
-                  <BudgetChart budget={trip.budget} />
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-3xl font-serif font-bold text-charcoal">
+                      Budget Breakdown
+                    </h2>
+                    <div className="flex items-center gap-3">
+                      <label htmlFor="currency" className="text-sm font-medium text-charcoal/70">
+                        Currency:
+                      </label>
+                      <select
+                        id="currency"
+                        value={selectedCurrency}
+                        onChange={(e) => setSelectedCurrency(e.target.value)}
+                        className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:border-terracotta"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="INR">INR (₹)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <BudgetChart
+                    budget={trip.budget}
+                    selectedCurrency={selectedCurrency}
+                    convertCurrency={convertCurrency}
+                    currencySymbol={CURRENCY_SYMBOLS[selectedCurrency]}
+                  />
                 </div>
               </div>
             )}
@@ -277,6 +302,31 @@ export default function TripDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowEditModal(false) }}
+        >
+          <div className="bg-transparent w-full max-w-lg animate-slide-up">
+            <ItineraryEditPanel
+              tripId={trip._id}
+              token={token}
+              onUpdated={(updatedTrip) => {
+                setTrip(updatedTrip)
+                setShowEditModal(false)
+              }}
+            />
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="w-full mt-3 py-3 rounded-xl text-white/80 hover:text-white text-sm font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

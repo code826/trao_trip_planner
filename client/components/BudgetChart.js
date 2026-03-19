@@ -9,20 +9,29 @@ const COLORS = {
   'Other': '#9CA3AF',
 }
 
-const BudgetChart = ({ budget }) => {
+const BudgetChart = ({ budget, selectedCurrency = 'USD', convertCurrency, currencySymbol = '$' }) => {
   const data = budget.breakdown.map((item) => ({
     name: item.category,
-    value: item.estimatedCost,
+    value: convertCurrency ? convertCurrency(item.estimatedCost) : item.estimatedCost,
   }))
+
+  const totalBudget = convertCurrency ? convertCurrency(budget.totalEstimatedCost) : budget.totalEstimatedCost
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
+      const originalValue = budget.breakdown.find(item => item.category === payload[0].name)?.estimatedCost || 0
+      const convertedValue = convertCurrency ? convertCurrency(originalValue) : originalValue
       return (
         <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
           <p className="font-semibold text-charcoal mb-2">{payload[0].name}</p>
           <p className="text-terracotta font-bold text-lg">
-            {budget.currency} {payload[0].value.toLocaleString()}
+            {currencySymbol}{convertedValue.toLocaleString()}
           </p>
+          {selectedCurrency !== 'USD' && (
+            <p className="text-sm text-charcoal/60">
+              Original: ${originalValue.toLocaleString()} USD
+            </p>
+          )}
         </div>
       )
     }
@@ -65,23 +74,33 @@ const BudgetChart = ({ budget }) => {
           Detailed Breakdown
         </h4>
         <div className="space-y-3">
-          {data.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-4 bg-cream rounded-xl hover:bg-creamDark transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: COLORS[item.name] || COLORS['Other'] }}
-                ></div>
-                <span className="font-medium text-charcoal">{item.name}</span>
+          {budget.breakdown.map((item, index) => {
+            const convertedValue = convertCurrency ? convertCurrency(item.estimatedCost) : item.estimatedCost
+            return (
+              <div
+                key={index}
+                className="flex items-center justify-between p-4 bg-cream rounded-xl hover:bg-creamDark transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: COLORS[item.category] || COLORS['Other'] }}
+                  ></div>
+                  <div>
+                    <span className="font-medium text-charcoal">{item.category}</span>
+                    {selectedCurrency !== 'USD' && (
+                      <span className="text-sm text-charcoal/60 ml-2">
+                        (${item.estimatedCost.toLocaleString()} USD)
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="text-lg font-bold text-charcoal">
+                  {currencySymbol}{convertedValue.toLocaleString()}
+                </span>
               </div>
-              <span className="text-lg font-bold text-charcoal">
-                {budget.currency} {item.value.toLocaleString()}
-              </span>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
@@ -91,15 +110,20 @@ const BudgetChart = ({ budget }) => {
           <div>
             <p className="text-charcoal/60 font-medium mb-1">Total Estimated Cost</p>
             <p className="text-3xl font-bold text-charcoal">
-              {budget.currency} {budget.totalEstimatedCost.toLocaleString()}
+              {currencySymbol}{totalBudget.toLocaleString()}
             </p>
+            {selectedCurrency !== 'USD' && (
+              <p className="text-sm text-charcoal/60 mt-1">
+                Original: ${budget.totalEstimatedCost.toLocaleString()} USD
+              </p>
+            )}
           </div>
           <div className="text-right">
             <p className="text-sm text-charcoal/60">
               Average per day
             </p>
             <p className="text-xl font-semibold text-terracotta">
-              {budget.currency} {Math.round(budget.totalEstimatedCost / 3).toLocaleString()}
+              {currencySymbol}{Math.round(totalBudget / 3).toLocaleString()}
             </p>
           </div>
         </div>

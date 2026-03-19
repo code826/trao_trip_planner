@@ -37,23 +37,25 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // })
-      // const data = await response.json()
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+      
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
 
-      // Mock login for development
-      if (formData.email && formData.password) {
-        login('mock-jwt-token', { id: '1', email: formData.email, name: 'Traveler' })
-        router.push('/dashboard')
-      } else {
-        throw new Error('Invalid credentials')
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Invalid email or password')
       }
+
+      // Store the real token from API
+      login(data.token, data.user)
+      router.push('/dashboard')
     } catch (err) {
-      setError('Invalid email or password')
+      setError(err.message || 'Invalid email or password')
     } finally {
       setLoading(false)
     }

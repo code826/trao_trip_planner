@@ -59,30 +59,31 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     name: formData.name,
-      //     email: formData.email,
-      //     password: formData.password,
-      //   }),
-      // })
-      // const data = await response.json()
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+      
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
 
-      // Mock registration for development
-      if (formData.name && formData.email && formData.password) {
-        login('mock-jwt-token', { id: '1', email: formData.email, name: formData.name })
-        setSuccess(true)
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 2000)
-      } else {
-        throw new Error('Registration failed')
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed')
       }
+
+      // Store the real token from API
+      login(data.token, data.user)
+      setSuccess(true)
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
     } catch (err) {
-      setError('Registration failed. Please try again.')
+      setError(err.message || 'Registration failed. Please try again.')
     } finally {
       setLoading(false)
     }

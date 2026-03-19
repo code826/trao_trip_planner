@@ -1,8 +1,7 @@
-import { Clock, RefreshCw, Loader2 } from 'lucide-react'
-import Button from './ui/Button'
+import { Clock } from 'lucide-react'
 import Card from './ui/Card'
 
-const ItineraryDay = ({ day, onRegenerate, isRegenerating }) => {
+const ItineraryDay = ({ day }) => {
   return (
     <Card padding="lg" className="h-full">
       {/* Day Header */}
@@ -18,27 +17,6 @@ const ItineraryDay = ({ day, onRegenerate, isRegenerating }) => {
           </div>
           <p className="text-charcoal/60 text-lg">{day.theme}</p>
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRegenerate}
-          loading={isRegenerating}
-          disabled={isRegenerating}
-          className="shrink-0"
-        >
-          {isRegenerating ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Regenerating...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Regenerate Day
-            </>
-          )}
-        </Button>
       </div>
 
       {/* Activities Timeline */}

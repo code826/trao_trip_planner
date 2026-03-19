@@ -1,5 +1,5 @@
 import Trip from '../models/Trip.js';
-import { generateTravelItinerary, regenerateDayItinerary } from '../services/agent/travelAgent.js';
+import { generateTravelItinerary, regenerateDayItinerary, updateItinerary as updateItineraryAI } from '../services/agent/travelAgent.js';
 
 export const getAllTrips = async (req, res, next) => {
   try {
@@ -167,6 +167,55 @@ export const deleteTrip = async (req, res, next) => {
     await Trip.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Trip deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateItinerary = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { userRequest } = req.body;
+
+    if (!userRequest || !userRequest.trim()) {
+      return res.status(400).json({ error: 'userRequest is required' });
+    }
+
+    const trip = await Trip.findById(id);
+    if (!trip) {
+      return res.status(404).json({ error: 'Trip not found' });
+    }
+
+    if (trip.userId.toString() !== req.user.userId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    let updatedData;
+    try {
+      updatedData = await updateItineraryAI(trip, userRequest.trim());
+    } catch (aiError) {
+      console.error('AI update failed:', aiError);
+      return res.status(500).json({
+        error: 'Failed to update itinerary. Please try again.',
+        details: aiError.message,
+      });
+    }
+
+    // Apply AI updates — including days count if it changed
+    trip.itinerary = updatedData.itinerary;
+    trip.budget = updatedData.budget;
+    if (updatedData.hotels && updatedData.hotels.length > 0) {
+      trip.hotels = updatedData.hotels;
+    }
+    if (updatedData.days && typeof updatedData.days === 'number') {
+      trip.days = updatedData.days;
+    } else {
+      // Derive from actual itinerary length if AI didn't explicitly return it
+      trip.days = updatedData.itinerary.length;
+    }
+
+    await trip.save();
+    res.json(trip);
   } catch (error) {
     next(error);
   }

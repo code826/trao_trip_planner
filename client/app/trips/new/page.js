@@ -9,9 +9,10 @@ import { INTERESTS, BUDGET_TYPES, MAX_TRIP_DAYS, MIN_TRIP_DAYS } from '@/lib/con
 
 export default function NewTripPage() {
   const router = useRouter()
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, token } = useAuthStore()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     destination: '',
     days: 5,
@@ -57,39 +58,48 @@ export default function NewTripPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
 
     if (!formData.destination.trim()) {
-      alert('Please enter a destination')
+      setError('Please enter a destination')
       return
     }
 
     if (formData.interests.length === 0) {
-      alert('Please select at least one interest')
+      setError('Please select at least one interest')
       return
     }
 
     setLoading(true)
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/trips', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify(formData),
-      // })
-      // const data = await response.json()
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+      
+      const response = await fetch(`${API_URL}/trips`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          destination: formData.destination,
+          days: formData.days,
+          budgetType: formData.budgetType,
+          interests: formData.interests,
+        }),
+      })
 
-      // Mock generation delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const data = await response.json()
 
-      // Navigate to trip details with mock ID
-      router.push('/trips/mock-trip-id')
-    } catch (error) {
-      console.error('Error creating trip:', error)
-      alert('Failed to create trip. Please try again.')
+      if (!response.ok) {
+        throw new Error(data.error || data.details || 'Failed to create trip')
+      }
+
+      // Navigate to the real trip with the generated ID
+      router.push(`/trips/${data._id}`)
+    } catch (err) {
+      console.error('Error creating trip:', err)
+      setError(err.message || 'Failed to create trip. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -132,6 +142,13 @@ export default function NewTripPage() {
         ) : (
           // Form
           <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+            
+            {error && (
+              <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 animate-slide-down">
+                <p className="font-medium">{error}</p>
+              </div>
+            )}
+            
             <div className="space-y-10">
               {/* Destination */}
               <div className="animate-slide-up">
