@@ -4,3 +4,9 @@ PROGRESS_TRACKER.md
 SCHEMA_MODEL.md
 STACK_CONFIG.md
 .opencode
+client/.env
+server/.env
+client/.next
+client/node_modules
+server/node_modules
+.env
