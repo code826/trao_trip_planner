@@ -1,42 +1,68 @@
-# 🌌 Tripo-AI - The Cosmic Voyager Travel Planner
+# 🌌 Tripo-AI — Next-Gen AI Travel Intelligence
 
-![Tripo-AI Banner](https://img.shields.io/badge/Tripo--AI-Cosmic%20Voyager-C45D3E?style=for-the-badge&logo=spacex&logoColor=white)
+![Tripo-AI Banner](https://img.shields.io/badge/Tripo--AI-Luxury%20Aviation-0B1120?style=for-the-badge&logo=spacex&logoColor=F59E0B)
 
-> **Experience the future of exploration.** Tripo-AI is an enterprise-level travel assistant that transforms your aspirations into legendary itineraries using advanced AI and a premium "Cosmic Voyager" aesthetic.
-
-## ✨ Features
-
-### 🤖 AI-Powered Trip Generation
-- **Smart Itinerary Creation**: Generate complete day-by-day travel itineraries in seconds
-- **Budget Planning**: Get detailed budget breakdowns with category-wise spending
-- **Hotel Recommendations**: Receive curated hotel suggestions matching your budget
-- **Interest-Based Planning**: Personalize your trip based on interests like art, food, adventure, etc.
-- **Edit & Revise Itinerary**: After trip creation, edit your itinerary anytime - add activities, modify details, or customize your plan
-
-### 💱 Dynamic Currency Conversion
-- View budgets in your preferred currency
-- Supports: USD, INR, EUR, GBP, JPY
-- Real-time conversion with clear price comparisons
-
-### 🎨 Premium Cosmic Voyager UI
-- **Interactive 3D Elements**: Animated CSS globe and dynamic airplane flight paths
-- **Glassmorphism**: High-end frosted glass interfaces with aurora backdrops
-- **Staggered Reveals**: Sophisticated entrance animations for an organic feel
-- **Modern Typography**: Sophisticated blend of Playfair Display and Plus Jakarta Sans
-- **Dynamic Interaction**: Rich micro-interactions and hover states throughout
-
-### 🔐 Authentication & Security
-- JWT-based authentication
-- Protected routes for authenticated users
-- User-specific data isolation
-- Secure password hashing
+> **The future of travel planning is here.** Tripo-AI is a premium, enterprise-grade travel planning suite that transforms your aspirations into hyper-personalized, legendary itineraries using advanced neural engines and a world-class "Luxury Aviation" aesthetic.
 
 ---
 
-## 🚀 How It Works
+## ✨ Project Overview
 
-### 1. User Flow
+Tripo-AI solves the "planning paralysis" by synthesizing millions of data points into a single, cohesive travel experience. From flights and hotels to minute-by-minute itineraries, everything is crafted by AI and presented through a high-performance, animated dark interface designed to WOW the modern traveler.
 
+## 🛠 Chosen Tech Stack & Justification
+
+| Layer | Technology | Justification |
+|-------|------------|---------------|
+| **Frontend** | **Next.js 14 (App Router)** | Best-in-class performance, SEO optimization, and file-based routing. |
+| **Styling** | **TailwindCSS + CSS Modules** | Rapid development with precise control over the "Luxury Aviation" design tokens. |
+| **Animations** | **Framer Motion + CSS Orbitals** | Combined for high-performance SVG animations and smooth staggered reveals. |
+| **State** | **Zustand** | Lightweight, high-performance state management for auth and currency persistence. |
+| **Backend** | **Node.js + Express** | Scalable, asynchronous runtime perfect for handling AI completion overhead. |
+| **Database** | **MongoDB** | Flexible document schema allows for complex, varying AI-generated itinerary structures. |
+| **AI Layer** | **z.ai (Large Language Model)** | State-of-the-art reasoning for logical sequence mapping and budget estimation. |
+
+---
+
+## 🚀 Setup Instructions
+
+### Local Development
+
+1. **Clone & Install**
+   ```bash
+   git clone <repo-url>
+   cd trao_trip_planner
+   ```
+
+2. **Backend Configuration**
+   - Navigate to `/server`
+   - Create `.env` from `.env.example`
+   - Required keys: `MONGODB_URI`, `JWT_SECRET`, `ZAI_API_KEY`
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+3. **Frontend Configuration**
+   - Navigate to `/client`
+   - Create `.env.local`
+   - Set `NEXT_PUBLIC_API_URL=http://localhost:5000/api`
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+### Deployment
+- **Frontend**: Best deployed on **Vercel** for Next.js native optimization.
+- **Backend**: Deploy on **Render** or **AWS EC2** with a MongoDB Atlas cloud instance.
+
+---
+
+## 🏛 High-Level Architecture
+
+Tripo-AI follows a decoupled client-server architecture. Below are the visual flows demonstrating the system intelligence:
+
+### 1. User Journey Flow
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Sign Up   │────▶│ Create Trip │────▶│ AI Generates│
@@ -56,8 +82,7 @@
                                         └─────────────┘
 ```
 
-### 2. Architecture Overview
-
+### 2. Physical Architecture
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND                              │
@@ -95,8 +120,7 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 3. Trip Creation Flow
-
+### 3. Intelligence Generation Engine (Trip Creation)
 ```
 User Input                    Backend Process                    AI Processing
 ───────────                  ──────────────                    ─────────────
@@ -132,8 +156,7 @@ interests: ["art", "food"]            │
                             └─────────────────┘
 ```
 
-### 4. Post-Planning: Edit & Customize Flow
-
+### 4. Post-Planning: Edit & Customize Strategy
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     VIEW TRIP DETAILS                             │
@@ -163,500 +186,64 @@ interests: ["art", "food"]            │
 
 ---
 
-## 🛠 Tech Stack
+## 🔐 Authentication & Authorization
 
-### Frontend
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Vanilla CSS + Glassmorphism Utility System
-- **Typography**: Playfair Display (Headings) & Plus Jakarta Sans (Body)
-- **State Management**: Zustand
-- **Icons**: Lucide React
-
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose
-
-### AI Integration
-- **LLM Provider**: z.ai
-- **Retry Logic**: 3 attempts with exponential backoff
+We implement a rigorous **JWT (JSON Web Token)** based security model:
+- **Strategy**: Passwords hashed with `bcrypt` (10 salt rounds).
+- **Bearer Auth**: Every sensitive API request requires a valid JWT in the Authorization header.
+- **User Isolation**: A custom MongoDB middleware ensures users can strictly only access/modify trips where `userId` matches their authenticated session.
+- **Persistence**: Auth state is managed via Zustand with `localStorage` persistence, enabling seamless session recovery.
 
 ---
 
-## 📁 Project Structure
+## 🤖 AI Agent Design & Purpose
 
-```
-trao_trip_planner/
-├── server/                          # Backend API
-│   ├── src/
-│   │   ├── index.js                 # Entry point
-│   │   ├── config/
-│   │   │   └── db.js               # MongoDB connection
-│   │   ├── models/
-│   │   │   ├── User.js             # User schema
-│   │   │   └── Trip.js             # Trip schema
-│   │   ├── middleware/
-│   │   │   ├── auth.js             # JWT authentication
-│   │   │   └── errorHandler.js     # Global error handling
-│   │   ├── controllers/
-│   │   │   ├── authController.js   # Auth logic
-│   │   │   └── tripController.js   # Trip CRUD logic
-│   │   ├── routes/
-│   │   │   ├── auth.js             # Auth routes
-│   │   │   └── trips.js            # Trip routes
-│   │   └── services/
-│   │       └── agent/
-│   │           └── travelAgent.js  # AI integration
-│   ├── .env                        # Environment variables
-│   └── package.json
-│
-├── client/                          # Frontend App
-│   ├── app/
-│   │   ├── page.js                 # Landing page
-│   │   ├── about/page.js           # About us
-│   │   ├── login/page.js           # Login page
-│   │   ├── register/page.js        # Register page
-│   │   ├── dashboard/page.js       # User dashboard
-│   │   └── trips/
-│   │       ├── new/page.js         # Create trip form
-│   │       └── [id]/page.js       # Trip details
-│   ├── components/
-│   │   ├── Navbar.js               # Navigation
-│   │   ├── Footer.js               # Footer
-│   │   ├── TripCard.js             # Trip card
-│   │   ├── ItineraryDay.js         # Day itinerary
-│   │   ├── BudgetChart.js           # Budget visualization
-│   │   ├── HotelCard.js            # Hotel info
-│   │   └── ui/                     # UI components
-│   ├── store/
-│   │   ├── authStore.js            # Auth state
-│   │   └── toastStore.js           # Toast notifications
-│   └── services/
-│       └── api.js                   # API client
-│
-├── CONTRACT_SPEC.md                 # Project specification
-├── SCHEMA_MODEL.md                 # Database schemas
-└── PROGRESS_TRACKER.md             # Development tracker
-```
+The core "Travel Agent" is a sophisticated prompt-engineered entity designed to:
+- **Contextual Reasoning**: Interpret user interests (e.g., "Art + Food") to find thematic overlaps.
+- **Logical Sequencing**: Map activities in a geographic and temporal order that makes sense (no cross-city zig-zagging).
+- **Financial Synthesis**: Estimate costs based on the user's selected `budgetType` (Economy, Standard, Luxury).
+- **Self-Correction**: The backend includes retry logic and JSON schema validation to ensure the AI output always meets the UI requirements.
 
 ---
 
-## 🔌 API Endpoints
+## 💎 Creativity Requirement: Dynamic Intelligence Conversion
 
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login user |
+### The Feature: Multi-Currency Sync Engine
+We recognized that travelers often struggle with mental math when looking at AI-generated costs.
 
-### Trips (Protected - Requires JWT)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/trips` | Get all user trips |
-| GET | `/api/trips/:id` | Get specific trip with full details |
-| POST | `/api/trips` | Create new trip (AI generates itinerary) |
-| PUT | `/api/trips/:id/regenerate-day` | Regenerate single day with AI |
-| DELETE | `/api/trips/:id` | Delete trip |
+**Why we built this?**
+To solve the "Currency Friction" problem. Users need to see costs in their home currency (e.g., Rupees/INR) to make real-world decisions.
 
-### What You Get After Trip Creation
-Each trip includes:
-- **Itinerary**: Day-by-day activities with times, titles, descriptions, costs
-- **Budget**: Category-wise breakdown (Accommodation, Food, Transport, etc.)
-- **Hotels**: 3 AI-recommended hotels with ratings and prices
-- **Edit Access**: View and customize your itinerary anytime
-
-### Example: Create Trip
-```bash
-curl -X POST http://localhost:5000/api/trips \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "destination": "Paris, France",
-    "days": 3,
-    "budgetType": "standard",
-    "interests": ["art", "food", "history"]
-  }'
-```
-
-### Example Response
-```json
-{
-  "_id": "60f7b2c8e4b0a1234567890a",
-  "destination": "Paris, France",
-  "days": 3,
-  "budgetType": "standard",
-  "interests": ["art", "food", "history"],
-  "itinerary": [
-    {
-      "dayNumber": 1,
-      "theme": "Arrival & Iconic Sights",
-      "activities": [
-        {
-          "time": "09:00 AM",
-          "title": "Check-in",
-          "description": "Arrive at hotel and settle in",
-          "estimatedCost": 0
-        },
-        {
-          "time": "01:00 PM",
-          "title": "Eiffel Tower",
-          "description": "Visit the iconic landmark",
-          "estimatedCost": 30
-        }
-      ]
-    }
-  ],
-  "budget": {
-    "breakdown": [
-      { "category": "Accommodation", "estimatedCost": 450 },
-      { "category": "Food", "estimatedCost": 200 },
-      { "category": "Activities", "estimatedCost": 150 }
-    ],
-    "totalEstimatedCost": 800,
-    "currency": "USD"
-  },
-  "hotels": [
-    {
-      "name": "Hotel de Paris",
-      "rating": 4.5,
-      "pricePerNight": 150,
-      "description": "Beautiful hotel near city center"
-    }
-  ]
-}
-```
+**Technical Implementation:**
+- **Dynamic API Architecture**: integrated the `frankfurter.dev` API to fetch real-time global exchange rates.
+- **Smart Persistence**: We implemented a 24-hour cache strategy using Zustand Middleware. Since global rates only fluctuate significantly daily, we save the rates to `localStorage` and only trigger a network call once every 24 hours.
+- **Efficiency**: This minimizes API calls (enhancing performance) while keeping the user experience "always live".
+- **UX Integration**: All cost badges in the `BudgetChart` and `ItineraryDay` components automatically sync when the user toggles the currency selector.
 
 ---
 
-## 💱 Currency Conversion
+## 🎨 Key Design Decisions & Trade-offs
 
-### Supported Currencies
-| Currency | Code | Conversion Rate (from USD) |
-|----------|------|----------------------------|
-| US Dollar | USD | 1.00 |
-| Indian Rupee | INR | 83.00 |
-| Euro | EUR | 0.92 |
-| British Pound | GBP | 0.79 |
-| Japanese Yen | JPY | 149.00 |
-
-### Supported Interests
-| Interest | Icon | Description |
-|----------|------|-------------|
-| Art | 🎨 | Museums, galleries, street art |
-| Food | 🍽️ | Restaurants, street food, cooking |
-| History | 🏛️ | Temples, monuments, heritage sites |
-| Adventure | 🧗 | Outdoor activities, sports |
-| Nature | 🌿 | Parks, gardens, wildlife |
-| Nightlife | 🌃 | Bars, clubs, evening entertainment |
-| Shopping | 🛍️ | Markets, malls, local crafts |
-| Wellness | 🧘 | Spas, yoga, relaxation |
-
-### How It Works
-1. AI generates budget in USD
-2. User selects preferred currency
-3. Frontend converts and displays amounts
-4. Original USD price shown for reference
-
-### Example Display
-```
-🍽️ Food & Dining
-   ₹1,660 / ₹2,000 (Original: $20)
-```
+1.  **Theme Selection**: Moved from a generic light theme to a **"Luxury Aviation" Dark Theme** (Midnight Blue & Gold). 
+    - *Decision*: Dark themes feel more premium and enterprise-grade.
+    - *Trade-off*: Requires more careful contrast management for accessibility.
+2.  **Typography**: Used **Outfit** (Display) and **Space Grotesk** (Body).
+    - *Decision*: Gives a technical, aviation-inspired feel.
+3.  **Animations**: Implemented a CSS-based **Orbital Globe** centerpiece.
+    - *Decision*: CSS animations are more performant than heavy 3D libraries (Three.js) for this use case, keeping the bundle size small.
 
 ---
 
-## 📋 Database Schema
+## ⚠️ Known Limitations & Future Roadmap
 
-### User
-```javascript
-{
-  _id: ObjectId,
-  email: String (unique),
-  passwordHash: String,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### Trip (Complete Structure)
-```javascript
-{
-  _id: ObjectId,
-  userId: ObjectId (ref: User),
-  
-  // Trip Info
-  destination: String,           // e.g., "Paris, France"
-  days: Number,                // e.g., 3
-  budgetType: String,           // "economy" | "standard" | "luxury"
-  interests: [String],          // ["art", "food", "history"]
-  
-  // AI-Generated Itinerary
-  itinerary: [{
-    dayNumber: Number,         // 1, 2, 3...
-    theme: String,              // "Arrival & Exploration"
-    activities: [{
-      time: String,             // "09:00 AM"
-      title: String,           // "Eiffel Tower"
-      description: String,      // "Visit the iconic landmark"
-      estimatedCost: Number    // 30 (in USD)
-    }]
-  }],
-  
-  // AI-Generated Budget
-  budget: {
-    breakdown: [{               // Category-wise spending
-      category: String,         // "Accommodation", "Food", "Transport"
-      estimatedCost: Number
-    }],
-    totalEstimatedCost: Number,  // Total trip cost
-    currency: String            // "USD"
-  },
-  
-  // AI-Generated Hotel Recommendations
-  hotels: [{
-    name: String,               // "Hotel de Paris"
-    rating: Number,             // 4.5
-    pricePerNight: Number,      // 150
-    description: String,        // "Beautiful hotel near city center"
-    bookingUrl: String         // Optional booking link
-  }],
-  
-  // Timestamps
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### What Each Trip Contains
-| Section | Description |
-|---------|-------------|
-| `itinerary` | Day-by-day plan with themes and activities |
-| `activities` | Each activity has time, title, description, cost |
-| `budget` | Total cost + category breakdown |
-| `hotels` | 3 AI-recommended accommodations |
-
----
-
-## 🎨 Design System: "Cosmic Voyager"
-
-### Color Tokens
-| Token | Hex | Role |
-|-------|-----|-------|
-| **Terracotta** | `#C45D3E` | Primary Action & Accents |
-| **Sage** | `#7D8B75` | Organic Secondary Accents |
-| **Charcoal** | `#2D2A26` | Deep Enterprise Typography |
-| **Cream** | `#F5F0E8` | Premium Matte Background |
-
-### Core Components
-- **Advanced Glass-Cards**: Frosted glass containers with dynamic light refraction.
-- **Aurora Surfaces**: Animated gradient backdrops that breathe with the user.
-- **Orbital Elements**: Floating decorative elements that respond to page flow.
-- **Reveal Groups**: Coordinated staggered entry for complex data sets.
-
-### Typography Hierarchy
-- **Primary Display**: `Playfair Display` — Elegance and timeless authority.
-- **Interface / Body**: `Plus Jakarta Sans` — Modern, technical precision.
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
-- z.ai API key
-
-### Installation
-
-1. **Clone the repository**
-```bash
-git clone <repo-url>
-cd trao_trip_planner
-```
-
-2. **Setup Backend**
-```bash
-cd server
-npm install
-cp .env.example .env
-# Edit .env with your values
-npm run dev
-```
-
-3. **Setup Frontend**
-```bash
-cd client
-npm install
-npm run dev
-```
-
-4. **Configure Environment Variables**
-
-**Server (.env)**
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/trao_travel_planner
-JWT_SECRET=your-super-secret-jwt-key
-ZAI_API_URL=https://api.z.ai/api/paas/v4/
-ZAI_API_KEY=your-zai-api-key
-FRONTEND_URL=http://localhost:3000
-```
-
-**Client (.env.local)**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
-### Running the App
-
-```bash
-# Terminal 1 - Backend
-cd server && npm run dev
-
-# Terminal 2 - Frontend
-cd client && npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
-
-### After Running - Complete User Journey
-
-1. **Sign Up / Login**
-   - Create account or login
-   - Access your personal dashboard
-
-2. **Create New Trip**
-   - Enter destination (e.g., "Paris, France")
-   - Select number of days (1-14)
-   - Choose budget type (Economy / Standard / Luxury)
-   - Select interests (multiple allowed)
-   - Click "Generate Itinerary"
-
-3. **AI Generates Your Trip**
-   - Wait for AI to create personalized itinerary
-   - View complete day-by-day plan
-   - See budget breakdown
-   - Check hotel recommendations
-
-4. **View & Edit Trip**
-   - Navigate to trip details
-   - View itinerary tab for daily schedule
-   - Switch to Budget tab for spending breakdown
-   - Switch to Hotels tab for accommodation options
-   - Click "Edit Your Itinerary" to customize
-
-5. **Dashboard Management**
-   - View all your trips
-   - See statistics
-   - Create more trips
-
----
-
-## 🔧 Features in Detail
-
-### 1. Smart Trip Creation
-- Input destination, duration, budget, and interests
-- AI analyzes preferences and generates personalized itinerary
-- Includes specific times, locations, costs, and descriptions
-- Multiple interests supported: Art, Food, History, Adventure, Nature, Nightlife, Shopping, Wellness
-
-### 2. Interactive Itinerary View
-- Day-by-day timeline with activities
-- Color-coded themes for each day
-- Time slots and estimated costs
-- Easy-to-read layout
-
-### 3. Post-Planning: Edit & Customize
-- **Edit Your Itinerary** button at top of trip details
-- View your complete day-by-day plan
-- Add personal notes or modifications
-- Customize activities based on your preferences
-- Use AI-generated plan as a starting point and refine it
-
-### 4. Visual Budget Breakdown
-- **Pie Chart**: Visual representation of spending
-- **Category Icons**: 🏨 🛏️ 🍽️ 🚗 🎭
-- **Multi-Currency**: Convert to INR, EUR, GBP, JPY
-- **Detailed List**: Category-wise spending
-
-### 4. Hotel Recommendations
-- AI-suggested hotels matching budget
-- Star ratings and prices
-- Location descriptions
-- Booking information
-
-### 5. Post-Planning: Edit & Customize Your Itinerary
-After your AI-generated trip is ready, you have full control to customize it:
-
-- **Edit Your Itinerary**: Click "Edit Your Itinerary" button at the top of trip details
-- **Modify Activities**: View and understand your day-by-day plan
-- **Add Personal Touches**: Use the AI-generated itinerary as a base and customize
-- **Plan Your Day**: Review suggested activities, times, and costs
-- **Save Changes**: Your edits are preserved with the trip
-
-> 💡 **Tip**: The AI creates a perfect starting point. You can always refine it based on your personal preferences!
-
-### 6. User Dashboard
-- View all created trips
-- Quick stats (total trips, days planned)
-- Easy navigation to trip details
-- Create new trip CTA
-
----
-
-## 🛡️ Security Features
-
-- **Password Hashing**: bcrypt with 10 salt rounds
-- **JWT Tokens**: 7-day expiration with secure signing
-- **User Isolation**: Users can only access their own trips (ownership verified on every request)
-- **Input Validation**: All inputs validated and sanitized
-- **CORS Protection**: Configured for frontend origin only
-- **Error Handling**: No sensitive data leaked in error messages
-- **Protected Routes**: All trip endpoints require valid JWT token
-
-## 📊 Complete Feature Summary
-
-| Feature | Description |
-|---------|-------------|
-| 🤖 AI Generation | z.ai creates complete itineraries |
-| 📅 Day-by-Day Plan | Detailed schedule for each day |
-| 💰 Budget Breakdown | Category-wise cost estimation |
-| 🏨 Hotel Picks | 3 AI-recommended accommodations |
-| 💱 Multi-Currency | View prices in USD, INR, EUR, GBP, JPY |
-| ✏️ Edit Itinerary | Customize your plan after generation |
-| 📊 Visual Charts | Colorful pie charts with icons |
-| 🔐 User Auth | JWT-based secure authentication |
-| 📱 Responsive | Works on mobile, tablet, desktop |
-| 🎨 Beautiful UI | "Wanderlust Explorer" design theme |
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-MIT License - feel free to use this project for learning and development.
-
----
-
-## 🙏 Acknowledgments
-
-- **AI Provider**: z.ai for LLM capabilities
-- **Design Inspiration**: Travel magazines and modern UI trends
-- **Icons**: Lucide React
-- **Fonts**: Google Fonts (Playfair Display, DM Sans)
+- **Model Context Window**: Current AI generations are limited by the model's token limit.
+- **Rating Synthesis**: While the agent recommends hotels, these are AI-curated and would benefit from a live integration with live review systems (like TripAdvisor/Yelp).
+- **Personalization Engine**: **Future work** includes a rating system for past trips, allowing the AI to learn from "What did the user actually like?" to refine the *next* generated voyage.
+- **Integration**: Adding live flight booking APIs would move this from a "Planner" to an "Actionable Booking Engine".
 
 ---
 
 <div align="center">
   <p><strong>Built with ❤️ for travelers who dream big</strong></p>
-  <p>Tripo-AI - Your AI Travel Companion</p>
+  <p>© 2026 Tripo-AI — AI Travel Redefined</p>
 </div>
