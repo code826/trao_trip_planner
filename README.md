@@ -227,9 +227,13 @@ To solve the "Currency Friction" problem. Users need to see costs in their home 
 1.  **Theme Selection**: Moved from a generic light theme to a **"Luxury Aviation" Dark Theme** (Midnight Blue & Gold). 
     - *Decision*: Dark themes feel more premium and enterprise-grade.
     - *Trade-off*: Requires more careful contrast management for accessibility.
-2.  **Typography**: Used **Outfit** (Display) and **Space Grotesk** (Body).
+2.  **AI Model Iteration & Structural Integrity**: 
+    - *Iterative Prompting*: We spent significant cycles iterating over different context prompts to find the "sweet spot" that provides the most creative yet logical travel responses.
+    - *Schema Enforcement*: Because the AI output is used to **patch the MongoDB documents directly**, maintaining a 100% consistent JSON structure was non-negotiable. 
+    - *The "Update" Challenge*: When a user requests a modification (e.g., "Reduce this trip by 1 day"), the AI must understand the existing context and return a valid, truncated schema that doesn't break the frontend's mapping logic.
+3.  **Typography**: Used **Outfit** (Display) and **Space Grotesk** (Body).
     - *Decision*: Gives a technical, aviation-inspired feel.
-3.  **Animations**: Implemented a CSS-based **Orbital Globe** centerpiece.
+4.  **Animations**: Implemented a CSS-based **Orbital Globe** centerpiece.
     - *Decision*: CSS animations are more performant than heavy 3D libraries (Three.js) for this use case, keeping the bundle size small.
 
 ---
