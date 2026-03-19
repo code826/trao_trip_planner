@@ -2,6 +2,8 @@
 
 ![Tripo-AI Banner](https://img.shields.io/badge/Tripo--AI-Luxury%20Aviation-0B1120?style=for-the-badge&logo=spacex&logoColor=F59E0B)
 
+**Live Demo**: [trao-trip-planner.vercel.app](https://trao-trip-planner.vercel.app/)
+
 > **The future of travel planning is here.** Tripo-AI is a premium, enterprise-grade travel planning suite that transforms your aspirations into hyper-personalized, legendary itineraries using advanced neural engines and a world-class "Luxury Aviation" aesthetic.
 
 ---
@@ -53,8 +55,12 @@ Tripo-AI solves the "planning paralysis" by synthesizing millions of data points
    ```
 
 ### Deployment
-- **Frontend**: Best deployed on **Vercel** for Next.js native optimization.
-- **Backend**: Deploy on **Render** or **AWS EC2** with a MongoDB Atlas cloud instance.
+
+To take the "Luxury Aviation" experience to the world, use the following production-grade stack:
+
+1.  **Frontend**: Deploy on **Vercel** ([Vercel.com](https://vercel.com/)) for native Next.js 14 optimization and global edge delivery.
+2.  **Backend**: Deploy on **Render** ([Render.com](https://render.com/)) using their Web Service (Node/Express) for seamless continuous deployment.
+3.  **Database**: Host on **MongoDB Atlas** ([MongoDB.com/Atlas](https://www.mongodb.com/atlas)) for a managed, scalable cloud database.
 
 ---
 
