@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Plus, LogOut, MapPin, Calendar, DollarSign, Compass, ArrowRight } from 'lucide-react'
+import { Plus, LogOut, MapPin, Calendar, DollarSign, Compass, ArrowRight, Sparkles } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import TripCard from '@/components/TripCard'
 import { useAuthStore } from '@/store/authStore'
@@ -61,7 +61,7 @@ export default function DashboardPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen gradient-mesh flex items-center justify-center">
+      <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="w-16 h-16 border-4 border-terracotta/30 border-t-terracotta rounded-full animate-spin"></div>
       </div>
     )
@@ -71,24 +71,6 @@ export default function DashboardPage() {
     return null
   }
 
-  const getBudgetColor = (budgetType) => {
-    switch (budgetType) {
-      case 'economy':
-        return 'bg-green-100 text-green-800'
-      case 'standard':
-        return 'bg-blue-100 text-blue-800'
-      case 'luxury':
-        return 'bg-purple-100 text-purple-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getBudgetLabel = (budgetType) => {
-    return budgetType.charAt(0).toUpperCase() + budgetType.slice(1)
-  }
-
-  // Extract name from email if name is not available
   const getDisplayName = () => {
     if (user?.name) {
       return user.name
@@ -105,25 +87,13 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen gradient-mesh">
+      <div className="min-h-screen bg-cream pt-20">
         <div className="container mx-auto px-6 py-12">
-          {/* Dashboard Header Skeleton */}
-          <div className="mb-12">
-            <div className="h-8 w-64 bg-gray-200 rounded animate-pulse mb-2"></div>
-            <div className="h-4 w-96 bg-gray-200 rounded animate-pulse"></div>
-          </div>
-
-          {/* Stats Grid Skeleton */}
+          <div className="h-8 w-64 skeleton rounded mb-2"></div>
+          <div className="h-4 w-96 skeleton rounded mb-12"></div>
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl p-6 h-32"></div>
-            ))}
-          </div>
-
-          {/* Trips Grid Skeleton */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl h-64"></div>
+              <div key={i} className="glass-card h-32 skeleton"></div>
             ))}
           </div>
         </div>
@@ -132,144 +102,114 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen gradient-mesh pt-20">
-      <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-cream pt-20 relative overflow-hidden bg-grid">
+      <div className="aurora-bg animate-aurora opacity-50"></div>
+
+      <div className="container mx-auto px-6 py-12 relative z-10">
         {/* Dashboard Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 gap-6 animate-slide-down">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-16 gap-8 reveal-group active">
           <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-2">
-              Welcome back, {getDisplayName()}!
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-charcoal mb-4">
+              Welcome back, <span className="text-terracotta">{getDisplayName()}</span>
             </h1>
-            <p className="text-xl text-charcoal/60">
-              Ready for your next adventure?
+            <p className="text-xl text-charcoal/50 font-medium">
+              Where shall your next curiosity lead you?
             </p>
           </div>
 
           <div className="flex items-center gap-4">
-            <Button
-              variant="primary"
+            <button
               onClick={() => router.push('/trips/new')}
-              className="flex items-center gap-2"
+              className="pill-button bg-charcoal text-white hover:bg-terracotta hover:scale-105 shadow-xl flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
-              Create New Trip
-            </Button>
-            <Button
-              variant="outline"
+              New Journey
+            </button>
+            <button
               onClick={handleLogout}
-              className="flex items-center gap-2"
+              className="w-12 h-12 glass-effect rounded-full flex items-center justify-center text-charcoal/60 hover:text-terracotta transition-all"
             >
               <LogOut className="w-5 h-5" />
-            </Button>
+            </button>
           </div>
         </div>
 
         {/* Stats Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12 stagger-children">
-          <div className="card-hover bg-white rounded-2xl p-6 animate-slide-up">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-terracotta/10 rounded-xl flex items-center justify-center">
-                <Compass className="w-6 h-6 text-terracotta" />
+        <div className="grid md:grid-cols-3 gap-8 mb-16 reveal-group active">
+          <div className="glass-card hover:scale-105 transition-transform duration-500">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-terracotta/10 rounded-2xl flex items-center justify-center">
+                <Compass className="w-8 h-8 text-terracotta" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-charcoal">{trips.length}</p>
-                <p className="text-charcoal/60">Total Trips</p>
+                <p className="text-4xl font-bold text-charcoal">{trips.length}</p>
+                <p className="text-charcoal/40 font-bold uppercase tracking-widest text-xs">Total Trips</p>
               </div>
             </div>
           </div>
 
-          <div className="card-hover bg-white rounded-2xl p-6 animate-slide-up">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-sage/10 rounded-xl flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-sage" />
+          <div className="glass-card hover:scale-105 transition-transform duration-500" style={{ transitionDelay: '0.1s' }}>
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-sage/10 rounded-2xl flex items-center justify-center">
+                <MapPin className="w-8 h-8 text-sage" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-charcoal">
+                <p className="text-4xl font-bold text-charcoal">
                   {trips.reduce((acc, trip) => acc + trip.days, 0)}
                 </p>
-                <p className="text-charcoal/60">Days Planned</p>
+                <p className="text-charcoal/40 font-bold uppercase tracking-widest text-xs">Days Explored</p>
               </div>
             </div>
           </div>
 
-          <div className="card-hover bg-white rounded-2xl p-6 animate-slide-up">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-terracotta/10 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-terracotta" />
+          <div className="glass-card hover:scale-105 transition-transform duration-500" style={{ transitionDelay: '0.2s' }}>
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-accent-blue/10 rounded-2xl flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-accent-blue" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-charcoal">3</p>
-                <p className="text-charcoal/60">Budget Types</p>
+                <p className="text-4xl font-bold text-charcoal">Active</p>
+                <p className="text-charcoal/40 font-bold uppercase tracking-widest text-xs">Intelligence</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Trips Section */}
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-3xl font-serif font-bold text-charcoal">
-            Your Trips
+        <div className="mb-10 reveal-group active">
+          <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">
+            Your Archive
           </h2>
+          <div className="w-20 h-1 bg-terracotta rounded-full"></div>
         </div>
 
         {trips.length === 0 ? (
-          // Empty State
-          <div className="bg-white rounded-2xl p-12 text-center animate-scale-in">
-            <div className="w-24 h-24 bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
-              <Compass className="w-12 h-12 text-sage" />
+          <div className="glass-card py-20 text-center reveal-group active">
+            <div className="w-24 h-24 bg-cream rounded-full flex items-center justify-center mx-auto mb-8 animate-orb">
+              <Compass className="w-10 h-10 text-terracotta" />
             </div>
-            <h3 className="text-2xl font-serif font-bold text-charcoal mb-4">
-              No trips yet
+            <h3 className="text-3xl font-serif font-bold text-charcoal mb-4">
+              A blank canvas awaits.
             </h3>
-            <p className="text-charcoal/60 mb-8 max-w-md mx-auto">
-              Start planning your first adventure! Our AI will create a personalized itinerary just for you.
+            <p className="text-charcoal/50 mb-10 max-w-sm mx-auto font-medium">
+              You haven't initiated any voyages yet. Let's start with something legendary.
             </p>
-            <Button
-              variant="primary"
+            <button
               onClick={() => router.push('/trips/new')}
-              className="inline-flex items-center gap-2"
+              className="pill-button bg-terracotta text-white hover:scale-110 shadow-lg"
             >
-              <Plus className="w-5 h-5" />
-              Create Your First Trip
-            </Button>
+              Create Your First Voyage
+            </button>
           </div>
         ) : (
-          // Trips Grid
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {trips.map((trip, index) => (
-              <div key={trip._id} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={trip._id} className="reveal-group active" style={{ transitionDelay: `${index * 0.1}s` }}>
                 <TripCard trip={trip} index={index} />
               </div>
             ))}
           </div>
         )}
-
-        {/* Quick Tips Section */}
-        <div className="mt-16 bg-gradient-to-br from-terracotta/5 to-sage/5 rounded-2xl p-8 animate-slide-up">
-          <h3 className="text-2xl font-serif font-bold text-charcoal mb-4">
-            Quick Tips for Better Trips
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="flex items-start gap-3">
-              <ArrowRight className="w-5 h-5 text-terracotta flex-shrink-0 mt-1" />
-              <p className="text-charcoal/70">
-                Be specific with your interests to get more personalized recommendations
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <ArrowRight className="w-5 h-5 text-terracotta flex-shrink-0 mt-1" />
-              <p className="text-charcoal/70">
-                Regenerate any day to explore different experiences for the same destination
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <ArrowRight className="w-5 h-5 text-terracotta flex-shrink-0 mt-1" />
-              <p className="text-charcoal/70">
-                Compare budget options to find the perfect balance for your travel style
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

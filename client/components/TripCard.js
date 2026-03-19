@@ -1,11 +1,18 @@
+'use client'
+
+import React from 'react'
 import Link from 'next/link'
-import { Calendar, DollarSign, ArrowRight } from 'lucide-react'
-import Card from './ui/Card'
-import { BUDGET_COLORS } from '@/lib/constants'
+import { Calendar, ArrowRight, MapPin } from 'lucide-react'
+
+const BUDGET_COLORS = {
+  economy: 'text-sage bg-sage/10',
+  standard: 'text-accent-blue bg-accent-blue/10',
+  luxury: 'text-terracotta bg-terracotta/10',
+}
 
 const TripCard = ({ trip, index = 0 }) => {
   const getBudgetColor = (budgetType) => {
-    return BUDGET_COLORS[budgetType] || BUDGET_COLORS.economy
+    return BUDGET_COLORS[budgetType] || BUDGET_COLORS.standard
   }
 
   const getBudgetLabel = (budgetType) => {
@@ -18,102 +25,59 @@ const TripCard = ({ trip, index = 0 }) => {
     return icons[index % 6]
   }
 
-  // Get gradient based on interests or random
-  const getGradient = () => {
-    const dest = trip.destination.toLowerCase()
-    if (dest.includes('paris')) return 'from-pink-400/20 via-rose-300/20 to-amber-200/20'
-    if (dest.includes('london')) return 'from-blue-400/20 via-indigo-300/20 to-purple-200/20'
-    if (dest.includes('tokyo')) return 'from-red-400/20 via-pink-300/20 to-orange-200/20'
-    if (dest.includes('new york')) return 'from-yellow-400/20 via-orange-300/20 to-red-200/20'
-    if (dest.includes('beach') || dest.includes('island')) return 'from-cyan-400/20 via-teal-300/20 to-emerald-200/20'
-    if (dest.includes('mountain')) return 'from-emerald-400/20 via-green-300/20 to-teal-200/20'
-
-    // Default gradients
-    const gradients = [
-      'from-terracotta/20 via-orange-300/20 to-amber-200/20',
-      'from-sage/20 via-emerald-300/20 to-teal-200/20',
-      'from-blue-400/20 via-indigo-300/20 to-purple-200/20',
-      'from-pink-400/20 via-rose-300/20 to-amber-200/20',
-    ]
-    return gradients[trip._id.length % gradients.length]
-  }
-
   return (
-    <Link href={`/trips/${trip._id}`}>
-      <Card hover padding="lg" className="h-full group overflow-hidden">
-        {/* Destination Icon Section with Gradient */}
-        <div className={`w-full h-48 bg-gradient-to-br ${getGradient()} rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-300`}>
-          {/* Animated background elements */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-2 right-4 w-16 h-16 bg-white/30 rounded-full blur-xl"></div>
-            <div className="absolute bottom-4 left-6 w-12 h-12 bg-white/20 rounded-full blur-lg"></div>
+    <Link href={`/trips/${trip._id}`} className="group block h-full">
+      <div className="glass-card h-full flex flex-col relative overflow-hidden group-hover:scale-[1.03] transition-all duration-500 hover:shadow-2xl">
+        {/* Animated Background Accent */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-terracotta/5 rounded-full blur-3xl group-hover:bg-terracotta/20 transition-all duration-700"></div>
+
+        <div className="flex flex-col h-full relative z-10">
+          <div className="flex items-center justify-between mb-8">
+            <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm glass-effect ${getBudgetColor(trip.budgetType)}`}>
+              {getBudgetLabel(trip.budgetType)}
+            </div>
           </div>
 
-          {/* Main destination icon */}
-          <span className="text-7xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 relative z-10 drop-shadow-lg">
-            {getDestinationIcon()}
-          </span>
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl shadow-inner group-hover:scale-110 transition-transform duration-500">
+              {getDestinationIcon()}
+            </div>
+            <div>
+              <h3 className="text-3xl font-serif font-bold text-charcoal leading-none group-hover:text-terracotta transition-colors duration-300">
+                {trip.destination}
+              </h3>
+              <div className="flex items-center gap-2 mt-2 text-charcoal/40 font-bold uppercase tracking-widest text-[10px]">
+                <Calendar className="w-3 h-3" />
+                {trip.days} Days Explorations
+              </div>
+            </div>
+          </div>
 
-          {/* Decorative small icons */}
-          <div className="absolute top-4 left-4 text-2xl opacity-40 group-hover:opacity-70 transition-opacity">
-            ✨
+          <div className="mt-auto pt-8 border-t border-charcoal/5 flex items-center justify-between">
+            <div className="flex -space-x-2">
+              {trip.interests.slice(0, 3).map((interest, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full border-2 border-white glass-effect flex items-center justify-center text-[10px] font-bold bg-cream shadow-sm"
+                  title={interest}
+                >
+                  {interest.charAt(0).toUpperCase()}
+                </div>
+              ))}
+              {trip.interests.length > 3 && (
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-charcoal text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+                  +{trip.interests.length - 3}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 text-terracotta font-bold text-xs group-hover:gap-4 transition-all duration-300">
+              Explore Voyage
+              <ArrowRight className="w-4 h-4" />
+            </div>
           </div>
         </div>
-
-        {/* Trip Details */}
-        <div className="mb-3">
-          <h3 className="text-2xl font-serif font-bold text-charcoal group-hover:text-terracotta transition-colors mb-1">
-            {trip.destination}
-          </h3>
-          <p className="text-sm text-charcoal/60">
-            {trip.days} {trip.days === 1 ? 'day' : 'days'} • {getBudgetLabel(trip.budgetType)}
-          </p>
-        </div>
-
-        {/* Meta Info - Compact pills */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <div className="flex items-center gap-1.5 text-sm text-charcoal/70 bg-cream px-3 py-1.5 rounded-full group-hover:bg-terracotta/10 transition-colors">
-            <Calendar className="w-3.5 h-3.5 text-terracotta" />
-            {trip.days} {trip.days === 1 ? 'day' : 'days'}
-          </div>
-          <div className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full group-hover:opacity-90 transition-opacity ${getBudgetColor(trip.budgetType)}`}>
-            <DollarSign className="w-3.5 h-3.5" />
-            {getBudgetLabel(trip.budgetType)}
-          </div>
-        </div>
-
-        {/* Interests */}
-        <div className="flex flex-wrap gap-2 mb-5">
-          {trip.interests?.slice(0, 3).map((interest) => (
-            <span
-              key={interest}
-              className="text-xs font-medium text-terracotta/80 bg-terracotta/10 px-2.5 py-1 rounded-full group-hover:bg-terracotta/20 transition-colors"
-            >
-              {interest}
-            </span>
-          ))}
-          {trip.interests?.length > 3 && (
-            <span className="text-xs text-charcoal/60 group-hover:text-charcoal/80 transition-colors">
-              +{trip.interests.length - 3} more
-            </span>
-          )}
-        </div>
-
-        {/* View Trip Link */}
-        <div className="flex items-center text-terracotta font-semibold group-hover:translate-x-1 transition-transform duration-200">
-          View Trip
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </div>
-
-        {/* Created Date */}
-        <div className="mt-4 pt-4 border-t border-gray-100 text-xs text-charcoal/50">
-          Created {new Date(trip.createdAt).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-          })}
-        </div>
-      </Card>
+      </div>
     </Link>
   )
 }

@@ -1,211 +1,173 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Compass, Sparkles, MapPin } from 'lucide-react'
+import { ArrowFastForward, Sparkles, MapPin, Compass, Globe, Plane, ArrowRight } from 'lucide-react'
+import { useAuthStore } from '@/store/authStore'
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false)
+  const { isAuthenticated } = useAuthStore()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-cream selection:bg-terracotta/30">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
-        {/* Decorative Background Pattern */}
-        <div className="absolute inset-0 bg-hero-pattern opacity-30"></div>
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-grid">
+        {/* Animated Background Elements */}
+        <div className="aurora-bg animate-aurora"></div>
 
-        {/* Floating Decorative Elements */}
-        <div className="absolute top-20 left-10 w-24 h-24 bg-terracotta/10 rounded-full animate-float" style={{ animationDelay: '0s' }}></div>
-        <div className="absolute top-40 right-20 w-32 h-32 bg-sage/10 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-terracotta/5 rounded-full animate-float" style={{ animationDelay: '4s' }}></div>
+        {/* Floating Orb */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-terracotta/10 rounded-full blur-[100px] animate-orb"></div>
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-sage/10 rounded-full blur-[100px] animate-orb" style={{ animationDelay: '-5s' }}></div>
 
-        <div className="container mx-auto px-6 py-20 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="stagger-children">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-sage mb-6 animate-slide-up">
-                <Sparkles className="w-4 h-4" />
-                <span>AI-Powered Travel Planning</span>
-              </div>
-
-              {/* Main Heading */}
-              <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif font-bold text-charcoal mb-6 animate-slide-up leading-tight">
-                Your Journey
-                <br />
-                <span className="text-terracotta">Begins Here</span>
-              </h1>
-
-              {/* Subheading */}
-              <p className="text-xl md:text-2xl text-charcoal/70 mb-10 max-w-2xl mx-auto animate-slide-up">
-                Create personalized travel itineraries in seconds. Just tell us where you want to go,
-                and we'll craft the perfect adventure for you.
-              </p>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up">
-                <Link
-                  href="/register"
-                  className="btn-hover focus-ring bg-terracotta text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center gap-2"
-                >
-                  Start Planning
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="/login"
-                  className="btn-hover focus-ring bg-white text-charcoal px-8 py-4 rounded-full font-semibold text-lg border-2 border-charcoal/10 hover:border-charcoal/20"
-                >
-                  Sign In
-                </Link>
-              </div>
-            </div>
+        {/* The Globe Animation */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-20 pointer-events-none">
+          <div className="w-full h-full border-[1px] border-charcoal/10 rounded-full animate-globe flex items-center justify-center relative">
+            <div className="absolute w-[90%] h-[90%] border-[1px] border-charcoal/5 rounded-full rotate-45"></div>
+            <div className="absolute w-[90%] h-[90%] border-[1px] border-charcoal/5 rounded-full -rotate-45"></div>
+            <Globe className="w-64 h-64 text-charcoal/20" strokeWidth={0.5} />
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-charcoal/20 rounded-full flex items-start justify-center p-1">
-            <div className="w-1.5 h-3 bg-charcoal/40 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 stagger-children">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-4 animate-slide-up">
-              Why Choose Trao?
-            </h2>
-            <p className="text-xl text-charcoal/70 max-w-2xl mx-auto animate-slide-up">
-              Intelligent travel planning that understands your unique style and preferences
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto stagger-children">
-            {/* Feature 1 */}
-            <div className="card-hover bg-cream rounded-2xl p-8 text-center animate-slide-up">
-              <div className="w-16 h-16 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Sparkles className="w-8 h-8 text-terracotta" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-charcoal mb-3">
-                AI-Powered
-              </h3>
-              <p className="text-charcoal/70">
-                Our intelligent algorithm creates personalized itineraries based on your interests,
-                budget, and travel style.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="card-hover bg-cream rounded-2xl p-8 text-center animate-slide-up">
-              <div className="w-16 h-16 bg-sage/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Compass className="w-8 h-8 text-sage" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-charcoal mb-3">
-                Curated Experiences
-              </h3>
-              <p className="text-charcoal/70">
-                Discover hidden gems and local favorites carefully selected to match your unique
-                preferences.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="card-hover bg-cream rounded-2xl p-8 text-center animate-slide-up">
-              <div className="w-16 h-16 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MapPin className="w-8 h-8 text-terracotta" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-charcoal mb-3">
-                Detailed Planning
-              </h3>
-              <p className="text-charcoal/70">
-                Get day-by-day itineraries, hotel recommendations, budget breakdowns, and more—all
-                in one place.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-24 hero-gradient">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 stagger-children">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-4 animate-slide-up">
-              How It Works
-            </h2>
-            <p className="text-xl text-charcoal/70 max-w-2xl mx-auto animate-slide-up">
-              Plan your perfect trip in three simple steps
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            {/* Step 1 */}
-            <div className="flex items-start gap-6 mb-12 stagger-children">
-              <div className="w-12 h-12 bg-terracotta text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xl animate-slide-up">
-                1
-              </div>
-              <div className="flex-grow animate-slide-up">
-                <h3 className="text-2xl font-serif font-bold text-charcoal mb-2">
-                  Tell Us About Your Trip
-                </h3>
-                <p className="text-charcoal/70 text-lg">
-                  Enter your destination, travel dates, budget range, and interests to help us
-                  understand your preferences.
-                </p>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="flex items-start gap-6 mb-12 stagger-children">
-              <div className="w-12 h-12 bg-sage text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xl animate-slide-up">
-                2
-              </div>
-              <div className="flex-grow animate-slide-up">
-                <h3 className="text-2xl font-serif font-bold text-charcoal mb-2">
-                  Let AI Create Your Itinerary
-                </h3>
-                <p className="text-charcoal/70 text-lg">
-                  Our AI analyzes millions of data points to create a personalized day-by-day plan
-                  tailored to your needs.
-                </p>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex items-start gap-6 stagger-children">
-              <div className="w-12 h-12 bg-terracotta text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xl animate-slide-up">
-                3
-              </div>
-              <div className="flex-grow animate-slide-up">
-                <h3 className="text-2xl font-serif font-bold text-charcoal mb-2">
-                  Explore and Customize
-                </h3>
-                <p className="text-charcoal/70 text-lg">
-                  Review your itinerary, explore hotel options, and regenerate any day if you want a
-                  different experience.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-terracotta">
-        <div className="container mx-auto px-6 text-center">
-          <div className="stagger-children">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6 animate-slide-up">
-              Ready to Start Your Adventure?
-            </h2>
-            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto animate-slide-up">
-              Join thousands of travelers who have discovered their perfect journeys with Trao.
-            </p>
-            <Link
-              href="/register"
-              className="btn-hover focus-ring bg-white text-terracotta px-8 py-4 rounded-full font-semibold text-lg inline-flex items-center gap-2 animate-slide-up"
+        {/* Flying Airplanes */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="absolute animate-airplane"
+              style={{
+                top: `${20 + i * 15}%`,
+                left: '-10%',
+                animationDelay: `${i * 3}s`,
+                animationDuration: `${10 + i * 2}s`
+              }}
             >
-              Get Started Free
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+              <div className="relative">
+                <Plane className="w-6 h-6 text-terracotta/40 rotate-90" />
+                <div className="absolute right-full top-1/2 -translate-y-1/2 w-48 h-[1px] bg-gradient-to-l from-terracotta/20 to-transparent"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className={`container mx-auto px-6 relative z-10 transition-all duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="max-w-4xl mx-auto text-center reveal-group active">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/40 backdrop-blur-md border border-white/40 px-5 py-2 rounded-full text-charcoal/60 mb-10 shadow-sm">
+              <Sparkles className="w-4 h-4 text-terracotta" />
+              <span className="text-sm font-bold tracking-widest uppercase">The Future of Exploration</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-charcoal mb-8 leading-[0.9]">
+              Next-Gen <br />
+              <span className="text-terracotta relative">
+                Itineraries
+                <span className="absolute -right-12 -top-8 text-sm font-sans font-normal text-outline uppercase tracking-tighter opacity-50">Enterprise</span>
+              </span>
+            </h1>
+
+            {/* Subheading */}
+            <p className="text-xl md:text-2xl text-charcoal/60 mb-12 max-w-2xl mx-auto font-medium">
+              We leverage neural travel agents to craft hyper-personalized journeys tailored to your soul's destination.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Link
+                href={isAuthenticated ? "/trips/new" : "/register"}
+                className="pill-button bg-charcoal text-white hover:bg-terracotta hover:scale-105 shadow-2xl animate-glow"
+              >
+                {isAuthenticated ? "New Adventure" : "Plan Your Journey"}
+              </Link>
+              <Link
+                href={isAuthenticated ? "/dashboard" : "/login"}
+                className="pill-button glass-effect text-charcoal hover:bg-white/50"
+              >
+                {isAuthenticated ? "My Voyages" : "Sign In"}
+              </Link>
+            </div>
           </div>
+        </div>
+
+        {/* Refined Scroll Indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-charcoal/30">Scroll Down</span>
+          <div className="h-16 w-[1px] bg-gradient-to-b from-charcoal/20 to-transparent relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1/2 bg-terracotta animate-infinite-scroll"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - Glassmorphic implementation */}
+      <section className="py-32 relative bg-white overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <h2 className="text-5xl md:text-6xl font-serif font-bold text-charcoal mb-8 leading-tight">
+                Designed for those who <br />
+                <span className="text-terracotta">seek more.</span>
+              </h2>
+              <div className="space-y-12">
+                <div className="flex gap-6">
+                  <div className="w-14 h-14 bg-cream rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Sparkles className="w-6 h-6 text-terracotta" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">AI-Synthesized Logic</h3>
+                    <p className="text-charcoal/60 leading-relaxed">Our models process millions of travel data points to identify the perfect balance between popular landmarks and local secrets.</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div className="w-14 h-14 bg-cream rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Compass className="w-6 h-6 text-terracotta" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Zero-Friction Planning</h3>
+                    <p className="text-charcoal/60 leading-relaxed">No more juggling tabs. Flights, hotels, and day-by-day activities are synthesized into a single, elegant interface.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="aspect-square rounded-[4rem] bg-gradient-to-tr from-cream to-white overflow-hidden shadow-inner border border-charcoal/5 relative group">
+                {/* Decorative background for the image placeholder */}
+                <div className="absolute inset-0 bg-grid opacity-20"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl animate-float">
+                    <Globe className="w-16 h-16 text-terracotta" />
+                  </div>
+                </div>
+                {/* Visual accents */}
+                <div className="absolute top-10 right-10 p-6 glass-effect rounded-2xl animate-orb">
+                  <MapPin className="w-6 h-6 text-terracotta" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modern High-Impact CTA */}
+      <section className="py-24 bg-charcoal relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-10"></div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-10 leading-none">
+            Your next adventure <br />
+            is one <span className="text-terracotta">click</span> away.
+          </h2>
+          <Link
+            href="/register"
+            className="pill-button bg-terracotta text-white hover:scale-110 shadow-[0_0_50px_rgba(196,93,62,0.3)] inline-flex items-center gap-3 text-xl"
+          >
+            Start Planning Now
+            <ArrowRight className="w-6 h-6" />
+          </Link>
         </div>
       </section>
     </div>

@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2, LogOut } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { useAuthStore } from '@/store/authStore'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -21,7 +22,13 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
   })
+
+  const { isAuthenticated, user, logout } = useAuthStore()
   const login = useAuthStore((state) => state.login)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -33,6 +40,11 @@ export default function RegisterPage() {
       return 'Password must be at least 8 characters long'
     }
     return ''
+  }
+
+  const handleLogout = () => {
+    logout()
+    router.push('/register')
   }
 
   const handleSubmit = async (e) => {
@@ -90,18 +102,21 @@ export default function RegisterPage() {
     }
   }
 
+  if (!mounted) return null
+
   if (success) {
     return (
-      <div className="min-h-screen gradient-mesh flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full text-center animate-scale-in">
+      <div className="min-h-screen bg-cream flex items-center justify-center py-12 px-4 shadow-inner">
+        <div className="aurora-bg animate-aurora opacity-30"></div>
+        <div className="max-w-md w-full text-center animate-scale-in relative z-10 glass-card p-12">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-green-600" />
           </div>
           <h2 className="text-3xl font-serif font-bold text-charcoal mb-4">
-            Account Created Successfully!
+            Voyage Initiated!
           </h2>
-          <p className="text-charcoal/70 mb-6">
-            Redirecting you to your dashboard...
+          <p className="text-charcoal/50 mb-6 font-medium">
+            Your account is ready. Redirecting to your dashboard...
           </p>
         </div>
       </div>
@@ -109,120 +124,149 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen gradient-mesh flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 animate-scale-in">
-        <div className="text-center">
-          <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">
-            Create Your Account
-          </h2>
-          <p className="text-charcoal/60">
-            Start planning your perfect journey today
-          </p>
-        </div>
+    <div className="min-h-screen bg-cream flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-grid">
+      <div className="aurora-bg animate-aurora opacity-50"></div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-red-700 text-sm">{error}</p>
+      <div className="max-w-md w-full space-y-8 animate-reveal relative z-10">
+        {/* Already Logged In Check */}
+        {isAuthenticated ? (
+          <div className="glass-card text-center py-12 px-8">
+            <div className="w-20 h-20 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-8 animate-orb">
+              <User className="w-10 h-10 text-terracotta" />
+            </div>
+            <h2 className="text-3xl font-serif font-bold text-charcoal mb-4">
+              Logout to Re-register
+            </h2>
+            <p className="text-charcoal/50 mb-10 font-medium">
+              You are currently logged in as <span className="text-terracotta font-bold">{user?.email || 'traveler'}</span>. To create a new account, please logout first.
+            </p>
+            <button
+              onClick={handleLogout}
+              className="pill-button bg-charcoal text-white w-full flex items-center justify-center gap-2 hover:bg-terracotta"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout Current Session
+            </button>
+            <Link href="/dashboard" className="block mt-6 text-charcoal/40 hover:text-charcoal font-bold uppercase tracking-[0.2em] text-[10px]">
+              Return to Archive
+            </Link>
+          </div>
+        ) : (
+          <div className="glass-card p-8 sm:p-12">
+            <div className="text-center mb-10">
+              <h2 className="text-4xl font-serif font-bold text-charcoal mb-4">
+                Join the Voyage
+              </h2>
+              <p className="text-charcoal/50 font-medium">
+                Start planning your perfect journey today
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-8 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-fade-in">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="space-y-5">
+                <Input
+                  label="Full Name"
+                  type="text"
+                  name="name"
+                  placeholder="John Doe"
+                  value={formData.name}
+                  onChange={handleChange}
+                  icon={<User className="w-5 h-5" />}
+                  required
+                  disabled={loading}
+                />
+
+                <Input
+                  label="Email Address"
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  icon={<Mail className="w-5 h-5" />}
+                  required
+                  disabled={loading}
+                />
+
+                <div className="relative">
+                  <Input
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    placeholder="Create a strong password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    icon={<Lock className="w-5 h-5" />}
+                    required
+                    disabled={loading}
+                    hint="Minimum 8 characters"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[38px] text-charcoal/40 hover:text-charcoal transition-colors focus:outline-none"
+                    disabled={loading}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <Input
+                    label="Confirm Password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    icon={<Lock className="w-5 h-5" />}
+                    required
+                    disabled={loading}
+                    error={
+                      formData.confirmPassword && formData.password !== formData.confirmPassword
+                        ? 'Passwords do not match'
+                        : ''
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-[38px] text-charcoal/40 hover:text-charcoal transition-colors focus:outline-none"
+                    disabled={loading}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                fullWidth
+                loading={loading}
+                disabled={loading || (formData.password !== formData.confirmPassword && formData.confirmPassword)}
+                className="py-4 text-lg"
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
+                {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
+              </Button>
+
+              <p className="text-center text-charcoal/60 mt-8">
+                Already have an account?{' '}
+                <Link href="/login" className="font-semibold text-terracotta hover:text-terracottaDark transition-colors link-hover">
+                  Sign in
+                </Link>
+              </p>
+            </form>
           </div>
         )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-5">
-            <Input
-              label="Full Name"
-              type="text"
-              name="name"
-              placeholder="John Doe"
-              value={formData.name}
-              onChange={handleChange}
-              icon={<User className="w-5 h-5" />}
-              required
-              disabled={loading}
-            />
-
-            <Input
-              label="Email Address"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              icon={<Mail className="w-5 h-5" />}
-              required
-              disabled={loading}
-            />
-
-            <div className="relative">
-              <Input
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                placeholder="Create a strong password"
-                value={formData.password}
-                onChange={handleChange}
-                icon={<Lock className="w-5 h-5" />}
-                required
-                disabled={loading}
-                hint="Minimum 8 characters"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[38px] text-charcoal/40 hover:text-charcoal transition-colors focus:outline-none"
-                disabled={loading}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-
-            <div className="relative">
-              <Input
-                label="Confirm Password"
-                type={showConfirmPassword ? 'text' : 'password'}
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                icon={<Lock className="w-5 h-5" />}
-                required
-                disabled={loading}
-                error={
-                  formData.confirmPassword && formData.password !== formData.confirmPassword
-                    ? 'Passwords do not match'
-                    : ''
-                }
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-[38px] text-charcoal/40 hover:text-charcoal transition-colors focus:outline-none"
-                disabled={loading}
-              >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth
-            loading={loading}
-            disabled={loading || (formData.password !== formData.confirmPassword && formData.confirmPassword)}
-            className="py-4 text-lg"
-          >
-            {loading ? 'Creating Account...' : 'Create Account'}
-            {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
-          </Button>
-
-          <p className="text-center text-charcoal/60">
-            Already have an account?{' '}
-            <Link href="/login" className="font-semibold text-terracotta hover:text-terracottaDark transition-colors link-hover">
-              Sign in
-            </Link>
-          </p>
-        </form>
       </div>
     </div>
   )

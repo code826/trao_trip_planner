@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, DollarSign, Star, Loader2, Home, Calendar, Edit3 } from 'lucide-react'
-import Button from '@/components/ui/Button'
+import { ArrowLeft, MapPin, DollarSign, Calendar, Edit3, Globe, Sparkles } from 'lucide-react'
 import ItineraryDay from '@/components/ItineraryDay'
 import ItineraryEditPanel from '@/components/ItineraryEditPanel'
 import BudgetChart from '@/components/BudgetChart'
@@ -24,21 +23,18 @@ export default function TripDetailsPage() {
   const [selectedCurrency, setSelectedCurrency] = useState('USD')
   const [showEditModal, setShowEditModal] = useState(false)
 
+  const { fetchRates, convert } = useCurrencyStore()
+
   useEffect(() => {
     setMounted(true)
-  }, [])
+    fetchRates()
+  }, [fetchRates])
 
   useEffect(() => {
     if (mounted && !isAuthenticated) {
       router.push('/login')
     }
   }, [mounted, isAuthenticated, router])
-
-  const { rates, fetchRates, convert } = useCurrencyStore()
-
-  useEffect(() => {
-    fetchRates()
-  }, [])
 
   const CURRENCY_SYMBOLS = {
     USD: '$',
@@ -54,7 +50,7 @@ export default function TripDetailsPage() {
 
   // Fetch trip data
   useEffect(() => {
-    if (!mounted || !isAuthenticated) return
+    if (!mounted || !token) return
 
     const fetchTrip = async () => {
       try {
@@ -80,37 +76,21 @@ export default function TripDetailsPage() {
     }
 
     fetchTrip()
-  }, [mounted, isAuthenticated, params.id, token])
+  }, [mounted, params.id, token])
 
-  if (!mounted) {
-    return (
-      <div className="min-h-screen gradient-mesh flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-terracotta/30 border-t-terracotta rounded-full animate-spin"></div>
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
+  if (!mounted) return null
 
   if (loading) {
     return (
-      <div className="min-h-screen gradient-mesh">
-        <div className="container mx-auto px-6 py-12">
+      <div className="min-h-screen bg-cream pt-20 overflow-hidden">
+        <div className="aurora-bg animate-aurora opacity-50"></div>
+        <div className="container mx-auto px-6 py-12 relative z-10">
           <div className="max-w-5xl mx-auto">
-            {/* Hero Skeleton */}
-            <div className="bg-white rounded-2xl p-8 mb-8">
-              <div className="h-48 bg-gray-200 rounded-xl animate-pulse"></div>
-            </div>
-
-            {/* Tabs Skeleton */}
-            <div className="h-12 bg-gray-200 rounded-xl animate-pulse mb-6"></div>
-
-            {/* Content Skeleton */}
+            <div className="glass-card h-64 skeleton mb-8"></div>
+            <div className="h-12 w-full glass-card skeleton mb-8"></div>
             <div className="space-y-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 h-64 animate-pulse"></div>
+                <div key={i} className="glass-card h-48 skeleton"></div>
               ))}
             </div>
           </div>
@@ -121,14 +101,15 @@ export default function TripDetailsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen gradient-mesh flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">!</span>
+      <div className="min-h-screen bg-cream flex items-center justify-center bg-grid">
+        <div className="aurora-bg animate-aurora opacity-30"></div>
+        <div className="glass-card text-center max-w-md relative z-10">
+          <div className="w-20 h-20 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl">⚠️</span>
           </div>
-          <h2 className="text-2xl font-serif font-bold text-charcoal mb-2">Error Loading Trip</h2>
-          <p className="text-charcoal/60 mb-6">{error}</p>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-terracotta text-white rounded-xl hover:bg-terracottaDark transition-colors">
+          <h2 className="text-3xl font-serif font-bold text-charcoal mb-4">Voyage Interrupted</h2>
+          <p className="text-charcoal/50 mb-10 font-medium">{error}</p>
+          <Link href="/dashboard" className="pill-button bg-charcoal text-white inline-flex items-center gap-2">
             <ArrowLeft className="w-5 h-5" />
             Back to Dashboard
           </Link>
@@ -137,76 +118,73 @@ export default function TripDetailsPage() {
     )
   }
 
-  if (!trip) {
-    return (
-      <div className="min-h-screen gradient-mesh flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-terracotta/30 border-t-terracotta rounded-full animate-spin"></div>
-      </div>
-    )
-  }
+  if (!trip) return null
 
   return (
-    <div className="min-h-screen gradient-mesh pt-20">
-      <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-cream pt-20 relative overflow-hidden bg-grid font-jakarta">
+      <div className="aurora-bg animate-aurora opacity-50"></div>
+
+      <div className="container mx-auto px-6 py-12 relative z-10">
         <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 animate-slide-down">
-            <Button
-              variant="ghost"
+          {/* Header Action */}
+          <div className="mb-10 reveal-group active">
+            <button
               onClick={() => router.back()}
-              className="mb-4"
+              className="flex items-center gap-2 text-charcoal/50 hover:text-terracotta font-bold uppercase tracking-[0.2em] text-[10px] transition-all"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back to Dashboard
-            </Button>
+              <ArrowLeft className="w-4 h-4" />
+              Back to Archive
+            </button>
           </div>
 
           {/* Hero Section */}
-          <div className="bg-gradient-to-br from-terracotta/10 to-sage/10 rounded-2xl p-8 mb-8 animate-scale-in">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div>
-                <div className="flex items-center gap-2 text-terracotta mb-2">
-                  <MapPin className="w-5 h-5" />
-                  <span className="font-semibold">{trip.destination}</span>
+          <div className="glass-card mb-12 relative overflow-hidden reveal-group active">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-terracotta/5 rounded-full blur-[100px] animate-orb"></div>
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 text-terracotta mb-4 font-bold uppercase tracking-widest text-xs">
+                <MapPin className="w-4 h-4" />
+                <span>Voyage Destination</span>
+              </div>
+
+              <h1 className="text-6xl md:text-7xl font-serif font-bold text-charcoal mb-8 leading-none">
+                {trip.destination}
+              </h1>
+
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-3 bg-white/50 backdrop-blur-md border border-white px-6 py-3 rounded-2xl shadow-sm">
+                  <Calendar className="w-5 h-5 text-terracotta" />
+                  <span className="font-bold text-charcoal/70">{trip.days} Days Explorations</span>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-charcoal mb-4">
-                  {trip.destination}
-                </h1>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-                    <Calendar className="w-4 h-4 text-terracotta" />
-                    <span className="text-sm font-medium">{trip.days} days</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-                    <DollarSign className="w-4 h-4 text-terracotta" />
-                    <span className="text-sm font-medium capitalize">{trip.budgetType}</span>
-                  </div>
-                  {trip.interests.map((interest) => (
-                    <span
-                      key={interest}
-                      className="px-4 py-2 bg-white rounded-full text-sm font-medium text-charcoal/70"
-                    >
-                      {interest}
-                    </span>
-                  ))}
+                <div className="flex items-center gap-3 bg-white/50 backdrop-blur-md border border-white px-6 py-3 rounded-2xl shadow-sm">
+                  <DollarSign className="w-5 h-5 text-accent-blue" />
+                  <span className="font-bold text-charcoal/70 capitalize">{trip.budgetType} Budgeting</span>
                 </div>
+                {trip.interests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="px-6 py-3 glass-effect rounded-2xl font-bold text-sm text-charcoal/50 uppercase tracking-widest"
+                  >
+                    {interest}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Tabs + Edit button */}
-          <div className="flex items-center justify-between gap-2 mb-8 overflow-x-auto pb-2">
-            <div className="flex gap-2">
+          {/* Navigation Tabs */}
+          <div className="flex items-center justify-between mb-12 reveal-group active">
+            <div className="inline-flex p-1.5 glass-effect rounded-[2rem] shadow-inner">
               {['itinerary', 'budget', 'hotels'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${activeTab === tab
-                    ? 'bg-terracotta text-white'
-                    : 'bg-white text-charcoal hover:bg-cream'
+                  className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 ${activeTab === tab
+                      ? 'bg-charcoal text-white shadow-lg scale-105'
+                      : 'text-charcoal/40 hover:text-charcoal/70'
                     }`}
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab}
                 </button>
               ))}
             </div>
@@ -214,86 +192,77 @@ export default function TripDetailsPage() {
             {activeTab === 'itinerary' && (
               <button
                 onClick={() => setShowEditModal(true)}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold bg-charcoal text-white hover:bg-charcoal/80 transition-all whitespace-nowrap shrink-0"
+                className="pill-button bg-terracotta text-white flex items-center gap-2 shadow-xl hover:scale-105"
               >
-                <Edit3 className="w-4 h-4" />
-                Edit Itinerary
+                <Edit3 className="w-5 h-5" />
+                Refine Journey
               </button>
             )}
           </div>
 
-          {/* Content */}
-          <div className="space-y-6">
+          {/* Content Area */}
+          <div className="reveal-group active">
             {activeTab === 'itinerary' && (
-              <div className="space-y-6">
-                {/* Days */}
-                <div className="space-y-6 stagger-children">
-                  {trip.itinerary.map((day, index) => (
-                    <div
-                      key={day.dayNumber}
-                      className="animate-slide-up"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <ItineraryDay day={day} />
-                    </div>
-                  ))}
-                </div>
+              <div className="space-y-10">
+                {trip.itinerary.map((day, index) => (
+                  <div
+                    key={day.dayNumber}
+                    className="relative transition-all duration-700"
+                    style={{ transitionDelay: `${index * 0.1}s` }}
+                  >
+                    {index !== trip.itinerary.length - 1 && (
+                      <div className="absolute left-10 top-20 bottom-0 w-[1px] bg-gradient-to-b from-terracotta/20 to-transparent"></div>
+                    )}
+                    <ItineraryDay day={day} />
+                  </div>
+                ))}
               </div>
             )}
 
             {activeTab === 'budget' && (
-              <div className="animate-scale-in">
-                <div className="bg-white rounded-2xl p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-3xl font-serif font-bold text-charcoal">
-                      Budget Breakdown
-                    </h2>
-                    <div className="flex items-center gap-3">
-                      <label htmlFor="currency" className="text-sm font-medium text-charcoal/70">
-                        Currency:
-                      </label>
-                      <select
-                        id="currency"
-                        value={selectedCurrency}
-                        onChange={(e) => setSelectedCurrency(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/20 focus:border-terracotta"
-                      >
-                        <option value="USD">USD ($)</option>
-                        <option value="INR">INR (₹)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="GBP">GBP (£)</option>
-                        <option value="JPY">JPY (¥)</option>
-                      </select>
-                    </div>
+              <div className="glass-card animate-reveal">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                  <div>
+                    <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">Financial Synthesis</h2>
+                    <p className="text-charcoal/40 font-medium">Detailed allocation across voyage segments</p>
                   </div>
-                  <BudgetChart
-                    budget={trip.budget}
-                    days={trip.days}
-                    selectedCurrency={selectedCurrency}
-                    convertCurrency={convertCurrency}
-                    currencySymbol={CURRENCY_SYMBOLS[selectedCurrency]}
-                  />
+
+                  <div className="flex items-center gap-4 glass-effect p-2 rounded-2xl">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-charcoal/40 ml-4">Currency</span>
+                    <select
+                      value={selectedCurrency}
+                      onChange={(e) => setSelectedCurrency(e.target.value)}
+                      className="bg-white border-0 rounded-xl px-4 py-2 font-bold text-xs focus:ring-0 cursor-pointer shadow-sm"
+                    >
+                      {Object.keys(CURRENCY_SYMBOLS).map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
+
+                <BudgetChart
+                  budget={trip.budget}
+                  days={trip.days}
+                  selectedCurrency={selectedCurrency}
+                  convertCurrency={convertCurrency}
+                  currencySymbol={CURRENCY_SYMBOLS[selectedCurrency]}
+                />
               </div>
             )}
 
             {activeTab === 'hotels' && (
-              <div className="animate-scale-in">
-                <div className="bg-white rounded-2xl p-8">
-                  <h2 className="text-3xl font-serif font-bold text-charcoal mb-6">
-                    Recommended Hotels
-                  </h2>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {trip.hotels.map((hotel, index) => (
-                      <div
-                        key={index}
-                        className="animate-slide-up"
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                      >
-                        <HotelCard hotel={hotel} />
-                      </div>
-                    ))}
-                  </div>
+              <div className="animate-reveal">
+                <div className="mb-10">
+                  <h2 className="text-4xl font-serif font-bold text-charcoal mb-2">Primary Residences</h2>
+                  <p className="text-charcoal/40 font-medium">Hyper-curated stay recommendations</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  {trip.hotels.map((hotel, index) => (
+                    <div key={index} className="hover:scale-[1.02] transition-transform duration-500">
+                      <HotelCard hotel={hotel} />
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -301,13 +270,10 @@ export default function TripDetailsPage() {
         </div>
       </div>
 
-      {/* Edit Modal */}
       {showEditModal && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-4"
-          onClick={(e) => { if (e.target === e.currentTarget) setShowEditModal(false) }}
-        >
-          <div className="bg-transparent w-full max-w-lg animate-slide-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-12">
+          <div className="absolute inset-0 bg-charcoal/40 backdrop-blur-md" onClick={() => setShowEditModal(false)}></div>
+          <div className="relative w-full max-w-2xl animate-reveal shadow-2xl">
             <ItineraryEditPanel
               tripId={trip._id}
               token={token}
@@ -316,12 +282,6 @@ export default function TripDetailsPage() {
                 setShowEditModal(false)
               }}
             />
-            <button
-              onClick={() => setShowEditModal(false)}
-              className="w-full mt-3 py-3 rounded-xl text-white/80 hover:text-white text-sm font-medium transition-colors"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}

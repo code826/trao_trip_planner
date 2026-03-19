@@ -16,4 +16,23 @@ const auth = (req, res, next) => {
   }
 };
 
+export const checkNotAuthenticated = (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (token) {
+      // If there's a token, try to verify it
+      try {
+        jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(400).json({ error: 'You are already logged in. Please logout first.' });
+      } catch (err) {
+        // Token is invalid, so it's okay to proceed to login/register
+        return next();
+      }
+    }
+    next();
+  } catch (error) {
+    next();
+  }
+};
+
 export default auth;

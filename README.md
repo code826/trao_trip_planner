@@ -1,8 +1,8 @@
-# 🌍 Tripo-AI - AI-Powered Travel Planner
+# 🌌 Tripo-AI - The Cosmic Voyager Travel Planner
 
-![Tripo-AI Banner](https://img.shields.io/badge/Tripo--AI-Travel%20Planner-C45D3E?style=for-the-badge&logo=airplanemodeactive&logoColor=white)
+![Tripo-AI Banner](https://img.shields.io/badge/Tripo--AI-Cosmic%20Voyager-C45D3E?style=for-the-badge&logo=spacex&logoColor=white)
 
-> Transform your travel dreams into detailed itineraries with the power of AI. Tripo-AI creates personalized travel plans based on your interests, budget, and preferences.
+> **Experience the future of exploration.** Tripo-AI is an enterprise-level travel assistant that transforms your aspirations into legendary itineraries using advanced AI and a premium "Cosmic Voyager" aesthetic.
 
 ## ✨ Features
 
@@ -18,12 +18,12 @@
 - Supports: USD, INR, EUR, GBP, JPY
 - Real-time conversion with clear price comparisons
 
-### 📱 Modern UI/UX
-- Beautiful "Wanderlust Explorer" design theme
-- Responsive design for all devices
-- Smooth animations and transitions
-- Interactive itinerary viewer
-- Colorful budget visualization with category icons
+### 🎨 Premium Cosmic Voyager UI
+- **Interactive 3D Elements**: Animated CSS globe and dynamic airplane flight paths
+- **Glassmorphism**: High-end frosted glass interfaces with aurora backdrops
+- **Staggered Reveals**: Sophisticated entrance animations for an organic feel
+- **Modern Typography**: Sophisticated blend of Playfair Display and Plus Jakarta Sans
+- **Dynamic Interaction**: Rich micro-interactions and hover states throughout
 
 ### 🔐 Authentication & Security
 - JWT-based authentication
@@ -167,7 +167,8 @@ interests: ["art", "food"]            │
 
 ### Frontend
 - **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
+- **Styling**: Vanilla CSS + Glassmorphism Utility System
+- **Typography**: Playfair Display (Headings) & Plus Jakarta Sans (Body)
 - **State Management**: Zustand
 - **Icons**: Lucide React
 
@@ -436,26 +437,25 @@ curl -X POST http://localhost:5000/api/trips \
 
 ---
 
-## 🎨 Design Theme: "Wanderlust Explorer"
+## 🎨 Design System: "Cosmic Voyager"
 
-### Color Palette
-| Color | Hex | Usage |
+### Color Tokens
+| Token | Hex | Role |
 |-------|-----|-------|
-| Terracotta | `#C45D3E` | Primary accent, CTAs |
-| Sage | `#7D8B75` | Secondary accent |
-| Cream | `#F5F0E8` | Background |
-| Charcoal | `#2D2A26` | Text |
+| **Terracotta** | `#C45D3E` | Primary Action & Accents |
+| **Sage** | `#7D8B75` | Organic Secondary Accents |
+| **Charcoal** | `#2D2A26` | Deep Enterprise Typography |
+| **Cream** | `#F5F0E8` | Premium Matte Background |
 
-### Typography
-- **Headings**: Playfair Display (serif)
-- **Body**: DM Sans (sans-serif)
+### Core Components
+- **Advanced Glass-Cards**: Frosted glass containers with dynamic light refraction.
+- **Aurora Surfaces**: Animated gradient backdrops that breathe with the user.
+- **Orbital Elements**: Floating decorative elements that respond to page flow.
+- **Reveal Groups**: Coordinated staggered entry for complex data sets.
 
-### Design Principles
-- Warm, inviting travel magazine aesthetic
-- Generous whitespace
-- Smooth animations and transitions
-- Responsive for all devices
-- Accessible color contrasts
+### Typography Hierarchy
+- **Primary Display**: `Playfair Display` — Elegance and timeless authority.
+- **Interface / Body**: `Plus Jakarta Sans` — Modern, technical precision.
 
 ---
 
