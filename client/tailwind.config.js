@@ -8,17 +8,47 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        terracotta: '#C45D3E',
-        sage: '#7D8B75',
-        cream: '#F5F0E8',
-        charcoal: '#2D2A26',
-        terracottaDark: '#A64D30',
-        sageDark: '#6A7662',
-        creamDark: '#E8E2D8',
+        midnight: {
+          DEFAULT: '#0B1120',
+          900: '#0F172A',
+          800: '#111827',
+          700: '#1E293B',
+          600: '#334155',
+          500: '#475569',
+          400: '#64748B',
+          300: '#94A3B8',
+          200: '#CBD5E1',
+          100: '#E2E8F0',
+          50: '#F1F5F9',
+        },
+        gold: {
+          DEFAULT: '#F59E0B',
+          light: '#FBBF24',
+          deep: '#D97706',
+          glow: 'rgba(245, 158, 11, 0.25)',
+        },
+        cyan: {
+          DEFAULT: '#06B6D4',
+          light: '#22D3EE',
+          glow: 'rgba(6, 182, 212, 0.2)',
+        },
+        // Legacy aliases for compatibility
+        terracotta: '#F59E0B',
+        terracottaDark: '#D97706',
+        sage: '#06B6D4',
+        sageDark: '#0891B2',
+        cream: '#0B1120',
+        creamDark: '#0F172A',
+        charcoal: '#E2E8F0',
+        'charcoal-light': '#CBD5E1',
+        'accent-blue': '#06B6D4',
+        'accent-gold': '#F59E0B',
       },
       fontFamily: {
-        serif: ['var(--font-playfair)', 'serif'],
-        sans: ['var(--font-dm-sans)', 'sans-serif'],
+        display: ['Outfit', 'sans-serif'],
+        body: ['Space Grotesk', 'sans-serif'],
+        sans: ['Space Grotesk', 'sans-serif'],
+        serif: ['Outfit', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -28,6 +58,12 @@ module.exports = {
         'float': 'float 6s ease-in-out infinite',
         'spin-slow': 'spin 3s linear infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'orbit': 'orbit-plane 8s linear infinite',
+        'globe-rotate': 'globe-spin 40s linear infinite',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
+        'glow': 'glow-pulse 3s ease-in-out infinite',
+        'neon': 'neon-pulse 3s ease-in-out infinite',
+        'dot-pulse': 'dot-pulse 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -35,7 +71,7 @@ module.exports = {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideDown: {
@@ -48,15 +84,12 @@ module.exports = {
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-12px)' },
         },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
-      backgroundImage: {
-        'hero-pattern': 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23C45D3E\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
       },
     },
   },

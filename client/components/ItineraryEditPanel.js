@@ -49,7 +49,6 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
             setInput('')
             onUpdated(data)
 
-            // Clear success message after 3s
             setTimeout(() => setSuccess(''), 3000)
         } catch (err) {
             setError(err.message || 'Something went wrong. Please try again.')
@@ -59,15 +58,15 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
     }
 
     return (
-        <div className="bg-white rounded-2xl border border-charcoal/10 shadow-lg overflow-hidden">
+        <div className="glass-card overflow-hidden p-0">
             {/* Header */}
-            <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-terracotta/10 to-sage/10 border-b border-charcoal/10">
-                <div className="w-8 h-8 bg-terracotta rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-white" />
+            <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-gold/10 to-cyan/5 border-b border-midnight-700/50">
+                <div className="w-8 h-8 bg-gradient-to-br from-gold to-gold-deep rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-midnight-900" />
                 </div>
                 <div>
-                    <h3 className="font-serif font-bold text-charcoal text-lg">Edit your itinerary</h3>
-                    <p className="text-charcoal/50 text-xs">Type a request or pick a suggestion below</p>
+                    <h3 className="font-display font-bold text-white text-lg">Edit your itinerary</h3>
+                    <p className="text-midnight-400 text-xs">Type a request or pick a suggestion below</p>
                 </div>
             </div>
 
@@ -79,7 +78,7 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
                             key={suggestion}
                             onClick={() => !loading && handleSubmit(suggestion)}
                             disabled={loading}
-                            className="px-3 py-1.5 rounded-full text-sm border border-terracotta/30 text-terracotta hover:bg-terracotta hover:text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 rounded-full text-sm border border-gold/20 text-gold hover:bg-gold/10 hover:border-gold/40 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             {suggestion}
                         </button>
@@ -88,9 +87,9 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
 
                 {/* Divider */}
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px bg-charcoal/10" />
-                    <span className="text-xs text-charcoal/40 font-medium">or write your own</span>
-                    <div className="flex-1 h-px bg-charcoal/10" />
+                    <div className="flex-1 h-px bg-midnight-700/50" />
+                    <span className="text-xs text-midnight-500 font-medium">or write your own</span>
+                    <div className="flex-1 h-px bg-midnight-700/50" />
                 </div>
 
                 {/* Free-text input */}
@@ -108,14 +107,14 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
                             placeholder="e.g. Shorten trip to 3 days, keep the best activities..."
                             rows={2}
                             disabled={loading}
-                            className="w-full px-4 py-3 rounded-xl border border-charcoal/20 focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta text-charcoal placeholder-charcoal/30 resize-none text-sm bg-cream/50 disabled:opacity-60"
+                            className="w-full px-4 py-3 rounded-xl border border-midnight-600 bg-midnight-800/50 text-white placeholder-midnight-500 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold resize-none text-sm disabled:opacity-60 transition-all"
                         />
                     </div>
 
                     <button
                         onClick={() => handleSubmit()}
                         disabled={loading || !input.trim()}
-                        className="h-11 w-11 shrink-0 flex items-center justify-center bg-terracotta text-white rounded-xl hover:bg-terracottaDark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="h-11 w-11 shrink-0 flex items-center justify-center bg-gradient-to-r from-gold to-gold-deep text-midnight-900 rounded-xl hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
@@ -127,15 +126,15 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
 
                 {/* Loading message */}
                 {loading && (
-                    <div className="flex items-center gap-2 text-sm text-charcoal/60 animate-pulse">
-                        <Loader2 className="w-4 h-4 animate-spin text-terracotta" />
+                    <div className="flex items-center gap-2 text-sm text-midnight-300 animate-pulse">
+                        <Loader2 className="w-4 h-4 animate-spin text-gold" />
                         <span>AI is updating your itinerary…</span>
                     </div>
                 )}
 
                 {/* Success message */}
                 {success && (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm text-emerald-400">
                         <span>✓</span>
                         <span>{success}</span>
                     </div>
@@ -143,7 +142,7 @@ const ItineraryEditPanel = ({ tripId, token, onUpdated }) => {
 
                 {/* Error message */}
                 {error && (
-                    <div className="flex items-center justify-between gap-2 px-4 py-2.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+                    <div className="flex items-center justify-between gap-2 px-4 py-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-sm text-rose-400">
                         <span>{error}</span>
                         <button onClick={() => setError('')} className="shrink-0">
                             <X className="w-4 h-4" />

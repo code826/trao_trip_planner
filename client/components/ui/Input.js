@@ -1,4 +1,4 @@
-import { Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
 const Input = ({
   label,
@@ -20,15 +20,15 @@ const Input = ({
       {label && (
         <label
           htmlFor={name}
-          className="text-sm font-semibold text-charcoal flex items-center gap-1"
+          className="text-sm font-semibold text-midnight-200 flex items-center gap-1"
         >
           {label}
-          {required && <span className="text-terracotta">*</span>}
+          {required && <span className="text-gold">*</span>}
         </label>
       )}
 
       <div className="relative">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal/40">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-midnight-400">
           {icon}
         </div>
         <input
@@ -40,31 +40,31 @@ const Input = ({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className={`w-full pl-12 pr-4 py-3 rounded-xl border-2 transition-all duration-200 bg-white text-charcoal placeholder:charcoal/40
+          className={`w-full pl-12 pr-4 py-3 rounded-xl border-2 transition-all duration-300 bg-midnight-800/50 text-white placeholder:text-midnight-500
             ${error
-              ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-500/10'
-              : 'border-gray-200 focus:border-terracotta focus:ring-4 focus:ring-terracotta/10 hover:border-gray-300'
+              ? 'border-rose-500/40 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/15'
+              : 'border-midnight-600 focus:border-gold focus:ring-2 focus:ring-gold/15 hover:border-midnight-500'
             }
-            disabled:opacity-50 disabled:cursor-not-allowed
+            disabled:opacity-40 disabled:cursor-not-allowed
           `}
           {...props}
         />
         {error && (
           <div className="absolute right-4 top-1/2 -translate-y-1/2">
-            <AlertCircle className="w-5 h-5 text-red-500" />
+            <AlertCircle className="w-5 h-5 text-rose-400" />
           </div>
         )}
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 flex items-center gap-1">
+        <p className="text-sm text-rose-400 flex items-center gap-1">
           <AlertCircle className="w-4 h-4" />
           {error}
         </p>
       )}
 
       {hint && !error && (
-        <p className="text-sm text-charcoal/60">{hint}</p>
+        <p className="text-sm text-midnight-400">{hint}</p>
       )}
     </div>
   )

@@ -13,7 +13,7 @@ const Card = ({
   }
 
   const classes = `
-    bg-white rounded-2xl shadow-sm
+    glass-card
     ${paddingStyles[padding]}
     ${hover ? 'card-hover cursor-pointer' : ''}
     ${className}

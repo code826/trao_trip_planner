@@ -23,23 +23,23 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose }) => {
   }
 
   const colors = {
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    info: 'bg-blue-500',
-    warning: 'bg-yellow-500',
+    success: 'bg-emerald-500/90 border-emerald-400/30',
+    error: 'bg-rose-500/90 border-rose-400/30',
+    info: 'bg-cyan/90 border-cyan-light/30',
+    warning: 'bg-gold/90 border-gold-light/30',
   }
 
   if (!isVisible) return null
 
   return (
     <div
-      className={`${colors[type]} text-white px-6 py-4 rounded-xl shadow-lg max-w-sm flex items-start gap-3 transition-all duration-300 animate-slide-down`}
+      className={`${colors[type]} backdrop-blur-xl border text-white px-6 py-4 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.3)] max-w-sm flex items-start gap-3 transition-all duration-300 animate-slide-down`}
     >
       <div className="flex-shrink-0 mt-0.5">
         {icons[type]}
       </div>
       <div className="flex-grow">
-        <p className="font-medium">{message}</p>
+        <p className="font-medium text-sm">{message}</p>
       </div>
       <button
         onClick={() => {

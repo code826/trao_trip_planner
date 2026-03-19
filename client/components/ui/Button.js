@@ -10,13 +10,13 @@ const Button = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-midnight disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97]'
 
   const variantStyles = {
-    primary: 'bg-terracotta text-white hover:bg-terracottaDark hover:shadow-lg focus:ring-terracotta/50',
-    secondary: 'bg-sage text-white hover:bg-sageDark hover:shadow-lg focus:ring-sage/50',
-    outline: 'bg-transparent border-2 border-terracotta text-terracotta hover:bg-terracotta hover:text-white focus:ring-terracotta/50',
-    ghost: 'bg-transparent text-charcoal hover:bg-cream hover:text-charcoal focus:ring-cream',
+    primary: 'bg-gradient-to-r from-gold to-gold-deep text-midnight-900 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] hover:scale-[1.02] focus:ring-gold/40',
+    secondary: 'bg-gradient-to-r from-cyan to-cyan-light text-midnight-900 hover:shadow-[0_0_25px_rgba(6,182,212,0.2)] hover:scale-[1.02] focus:ring-cyan/40',
+    outline: 'bg-transparent border-2 border-gold/30 text-gold hover:bg-gold/10 hover:border-gold/50 focus:ring-gold/30',
+    ghost: 'bg-transparent text-midnight-200 hover:bg-midnight-700/50 hover:text-white focus:ring-midnight-600',
   }
 
   const sizeStyles = {
