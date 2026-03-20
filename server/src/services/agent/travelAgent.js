@@ -222,8 +222,35 @@ Return a JSON object with the following structure:
   throw new Error(`Failed to regenerate day after ${maxRetries} attempts: ${lastError.message}`);
 };
 
+// Helper: strip MongoDB internal fields (_id, __v) from objects before sending to AI
+const stripMongoFields = (obj) => {
+  return JSON.parse(JSON.stringify(obj, (key, value) => {
+    if (key === '_id' || key === '__v') return undefined;
+    return value;
+  }));
+};
+
+// Helper: attempt to recover truncated JSON by closing open brackets/braces
+const tryRecoverTruncatedJSON = (text) => {
+  let cleaned = text.trim();
+  // Remove trailing incomplete string (cut-off mid-value)
+  cleaned = cleaned.replace(/,\s*"[^"]*$/s, '');
+  cleaned = cleaned.replace(/,\s*$/s, '');
+  // Count open vs close brackets
+  const opens = { '{': 0, '[': 0 };
+  for (const ch of cleaned) {
+    if (ch === '{') opens['{']++;
+    if (ch === '}') opens['{']--;
+    if (ch === '[') opens['[']++;
+    if (ch === ']') opens['[']--;
+  }
+  // Close any remaining open brackets/braces
+  while (opens['['] > 0) { cleaned += ']'; opens['[']--; }
+  while (opens['{'] > 0) { cleaned += '}'; opens['{']--; }
+  return cleaned;
+};
+
 const updateItinerary = async (trip, userRequest) => {
-  // Coding Plan endpoint
   const ZAI_BASE_URL = process.env.ZAI_API_URL || 'https://api.z.ai/api/coding/paas/v4';
   const ZAI_API_URL = `${ZAI_BASE_URL.replace(/\/$/, '')}/chat/completions`;
   const ZAI_API_KEY = process.env.ZAI_API_KEY;
@@ -231,6 +258,11 @@ const updateItinerary = async (trip, userRequest) => {
   if (!ZAI_API_KEY) {
     throw new Error('ZAI_API_KEY is not configured.');
   }
+
+  // Strip MongoDB fields to reduce token usage
+  const cleanItinerary = stripMongoFields(trip.itinerary);
+  const cleanBudget = stripMongoFields(trip.budget);
+  const cleanHotels = stripMongoFields(trip.hotels);
 
   const systemPrompt = `You are an expert travel agent helping a user refine their existing travel itinerary.
 Update the given itinerary based on the user request.
@@ -243,66 +275,26 @@ Rules:
 - Ensure logical travel flow
 - If user asks to change number of days, add or remove days accordingly and update the days count
 - Recalculate budget breakdown and total to reflect any changes
+- Keep activity descriptions SHORT (max 15 words each) to avoid response truncation
+- Do NOT include _id, __v, or any MongoDB fields
 
-Respond ONLY with valid JSON. No extra text or explanations.`;
+Respond ONLY with valid JSON. No markdown, no extra text, no explanations.`;
 
-  const userPrompt = `Current trip details:
-- Destination: ${trip.destination}
-- Days: ${trip.days}
-- Budget type: ${trip.budgetType}
-- Interests: ${trip.interests.join(', ')}
+  const userPrompt = `Trip: ${trip.destination}, ${trip.days} days, ${trip.budgetType} budget, interests: ${trip.interests.join(', ')}
 
 Current itinerary:
-${JSON.stringify(trip.itinerary, null, 2)}
+${JSON.stringify(cleanItinerary)}
 
 Current budget:
-${JSON.stringify(trip.budget, null, 2)}
+${JSON.stringify(cleanBudget)}
 
 Current hotels:
-${JSON.stringify(trip.hotels, null, 2)}
+${JSON.stringify(cleanHotels)}
 
 User request: "${userRequest}"
 
-Return ONLY a JSON object with this EXACT structure. Do NOT include _id fields anywhere:
-{
-  "days": <number>,
-  "itinerary": [
-    {
-      "dayNumber": 1,
-      "theme": "string",
-      "activities": [
-        {
-          "time": "09:00 AM",
-          "title": "string",
-          "description": "string",
-          "estimatedCost": 0
-        }
-      ]
-    }
-  ],
-  "budget": {
-    "breakdown": [
-      {
-        "category": "string",
-        "estimatedCost": 0
-      }
-    ],
-    "totalEstimatedCost": 0,
-    "currency": "USD"
-  },
-  "hotels": [
-    {
-      "name": "string",
-      "rating": 4.5,
-      "pricePerNight": 0,
-      "description": "string",
-      "bookingUrl": "optional string"
-    }
-  ]
-}
-
-IMPORTANT: Never include _id, __v, or any MongoDB internal fields in your response.
-If you cannot process the request, return: { "success": false, "message": "Unable to update itinerary" }`;
+Return ONLY a JSON object with this structure:
+{"days":<number>,"itinerary":[{"dayNumber":1,"theme":"string","activities":[{"time":"09:00 AM","title":"string","description":"short string","estimatedCost":0}]}],"budget":{"breakdown":[{"category":"string","estimatedCost":0}],"totalEstimatedCost":0,"currency":"USD"},"hotels":[{"name":"string","rating":4.5,"pricePerNight":0,"description":"short string"}]}`;
 
   const maxRetries = 3;
   let lastError = null;
@@ -322,7 +314,7 @@ If you cannot process the request, return: { "success": false, "message": "Unabl
             { role: 'user', content: userPrompt },
           ],
           temperature: 0.5,
-          max_tokens: 4096,
+          max_tokens: 8192,
         }),
       });
 
@@ -332,19 +324,34 @@ If you cannot process the request, return: { "success": false, "message": "Unabl
 
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content;
+      const finishReason = data.choices?.[0]?.finish_reason;
 
       if (!content) {
         throw new Error('Empty response from Z.AI API');
       }
 
       // Strip markdown wrapping if present
-      const cleanContent = content.replace(/```json\n?|```/g, '').trim();
+      let cleanContent = content.replace(/```json\n?|```/g, '').trim();
+
+      // If response was truncated (finish_reason === 'length'), try to recover
+      if (finishReason === 'length') {
+        console.warn('AI response was truncated (finish_reason: length). Attempting recovery...');
+        cleanContent = tryRecoverTruncatedJSON(cleanContent);
+      }
+
       let parsedResponse;
       try {
         parsedResponse = JSON.parse(cleanContent);
       } catch (parseError) {
-        console.error('Raw content that failed parsing (update):', content);
-        throw new Error('Invalid JSON response from Z.AI API');
+        // Second recovery attempt for any parse failure
+        try {
+          const recovered = tryRecoverTruncatedJSON(cleanContent);
+          parsedResponse = JSON.parse(recovered);
+          console.log('Successfully recovered truncated JSON response.');
+        } catch (recoveryError) {
+          console.error('Raw content that failed parsing (update):', content);
+          throw new Error('Invalid JSON response from Z.AI API');
+        }
       }
 
       // Check for failure response from AI
@@ -364,6 +371,7 @@ If you cannot process the request, return: { "success": false, "message": "Unabl
     } catch (error) {
       lastError = error;
       console.error(`Update attempt ${attempt + 1} failed:`, error.message);
+      if (error.cause) console.error('  Cause:', error.cause);
       const backoffTime = Math.pow(2, attempt) * 1000;
       await new Promise(resolve => setTimeout(resolve, backoffTime));
     }

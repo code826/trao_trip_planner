@@ -201,6 +201,14 @@ export const updateItinerary = async (req, res, next) => {
       });
     }
 
+    // Log the raw AI response for debugging
+    // console.log('=== AI Update Response ===');
+    // console.log('days:', updatedData.days);
+    // console.log('itinerary length:', updatedData.itinerary?.length);
+    // console.log('budget total:', updatedData.budget?.totalEstimatedCost);
+    // console.log('hotels count:', updatedData.hotels?.length);
+    // console.log('=========================');
+
     // Strip any _id / __v fields the AI may have invented — Mongoose will generate fresh ObjectIds
     const stripIds = (obj) => {
       if (Array.isArray(obj)) return obj.map(stripIds);
@@ -215,20 +223,28 @@ export const updateItinerary = async (req, res, next) => {
       return obj;
     };
 
-    // Apply AI updates — including days count if it changed
-    trip.itinerary = stripIds(updatedData.itinerary);
-    trip.budget = stripIds(updatedData.budget);
+    // Build update payload
+    const updatePayload = {
+      itinerary: stripIds(updatedData.itinerary),
+      budget: stripIds(updatedData.budget),
+    };
     if (updatedData.hotels && updatedData.hotels.length > 0) {
-      trip.hotels = stripIds(updatedData.hotels);
-    }
-    if (updatedData.days && typeof updatedData.days === 'number') {
-      trip.days = updatedData.days;
-    } else {
-      trip.days = updatedData.itinerary.length;
+      updatePayload.hotels = stripIds(updatedData.hotels);
     }
 
-    await trip.save();
-    res.json(trip);
+    // Use itinerary length as the source of truth for days (floor of 1)
+    const itineraryLength = updatedData.itinerary?.length || 0;
+    const aiDays = (typeof updatedData.days === 'number') ? updatedData.days : 0;
+    updatePayload.days = Math.max(itineraryLength, aiDays, 1);
+
+    // Use findByIdAndUpdate to avoid Mongoose VersionError on array replacements
+    const updatedTrip = await Trip.findByIdAndUpdate(
+      id,
+      { $set: updatePayload },
+      { new: true, runValidators: true }
+    );
+
+    res.json(updatedTrip);
   } catch (error) {
     next(error);
   }
